@@ -1,3 +1,7 @@
+**1.2**
+* Release date: 06/23/2015
+* TOC update for patch 6.2
+
 **1.1**
 * Release date: 06/21/2015
 * Bug fix, characters with Herbalism or Mining caused LUA error
