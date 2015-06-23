@@ -1,0 +1,15 @@
+**1.3**
+* Release date: 06/23/2015
+* Bug fix, Alchemy Experiment, the Alchemy Lab daily wasn't updating immediately, but instead only after a reload or logging out
+
+**1.2**
+* Release date: 06/23/2015
+* TOC update for patch 6.2
+
+**1.1**
+* Release date: 06/21/2015
+* Bug fix, characters with Herbalism or Mining caused LUA error
+
+**1.0**
+* Release date: 06/21/2015
+* Initial release
