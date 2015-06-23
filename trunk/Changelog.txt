@@ -1,3 +1,7 @@
+**1.3**
+* Release date: 06/23/2015
+* Bug fix, Alchemy Experiment, the Alchemy Lab daily wasn't updating immediately, but instead only after a reload or logging out
+
 **1.2**
 * Release date: 06/23/2015
 * TOC update for patch 6.2

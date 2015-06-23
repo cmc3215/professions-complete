@@ -362,6 +362,7 @@ NS.OnPlayerLogin = function( event ) -- PLAYER_LOGIN
 		NS.selectedCharacterKey = NS.currentCharacter.key; -- Sets selected character to current character
 		--
 		PCEventsFrame:RegisterEvent( "QUEST_ACCEPTED" );
+		PCEventsFrame:RegisterEvent( "QUEST_TURNED_IN" );
 		PCEventsFrame:RegisterEvent( "QUEST_REMOVED" );
 		PCEventsFrame:RegisterEvent( "CHAT_MSG_TRADESKILLS" );
 		PCEventsFrame:RegisterEvent( "GARRISON_BUILDING_PLACED" );
@@ -393,6 +394,7 @@ NS.Frame( "PCEventsFrame", UIParent, {
 		if		event == "ADDON_LOADED"				then	NS.OnAddonLoaded( event );
 		elseif	event == "PLAYER_LOGIN"				then	NS.OnPlayerLogin( event );
 		elseif	event == "QUEST_ACCEPTED"			then	NS.Update( event );
+		elseif	event == "QUEST_TURNED_IN"			then	NS.Update( event );
 		elseif	event == "QUEST_REMOVED"			then	NS.Update( event );
 		elseif	event == "CHAT_MSG_TRADESKILLS"		then	NS.OnChatMsgTradeskills( event, ... );
 		elseif	event == "GARRISON_BUILDING_PLACED"	then	NS.Update( event );
