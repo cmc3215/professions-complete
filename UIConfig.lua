@@ -303,7 +303,7 @@ NS.UI.cfg = {
 			tabText			= "Characters",
 			Init			= function( SubFrame )
 				NS.TextFrame( "Character", SubFrame, L["Character:"], {
-					size = { 60, 16 },
+					size = { 64, 16 },
 					setPoint = { "TOPLEFT", "$parent", "TOPLEFT", 8, -8 },
 				} );
 				NS.DropDownMenu( "CharacterDropDownMenu", SubFrame, {

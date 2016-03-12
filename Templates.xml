@@ -78,7 +78,7 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
-				<ButtonText name="$parentText" justifyH="LEFT" setAllPoints="true"/>
+				<ButtonText name="$parentText" justifyH="LEFT" wordwrap="false" setAllPoints="true"/>
 				<NormalFont style="GameFontHighlight"/>
 			</Button>
 			<!-- [Daily Cooldowns and Quests] -->
