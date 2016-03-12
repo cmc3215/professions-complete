@@ -1,0 +1,14 @@
+﻿## Interface: 60200
+## Title: Professions Complete
+## Version: 1.4
+## Author: Clinton Caldwell
+## Notes: Monitors profession cooldowns and garrison profession building dailies
+## SavedVariables: PROFESSIONSCOMPLETE_SAVEDVARIABLES
+## SavedVariablesPerCharacter: PROFESSIONSCOMPLETE_SAVEDVARIABLESPERCHARACTER
+
+Templates.xml
+Localization.lua
+Base.lua
+ProfessionsComplete.lua
+UIConfig.lua
+UICreate.lua
