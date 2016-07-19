@@ -18,15 +18,16 @@ NS.currentCharacter = {
 	key = nil,
 };
 --
+NS.garrisonType = LE_GARRISON_TYPE_6_0;
 NS.buildingInfo = {
 	-- Gem Boutique
 	[select( 2, C_Garrison.GetBuildingInfo( 132 ) )] = { icon = "Interface\\ICONS\\inv_misc_gem_01", rank = 2,
 		quests = {
 			-- Both
-			{ questID = 37319, title = L["Jewelcrafting Special Order: Wedding Bands"], name = GetSpellInfo( 170710 ), icon = GetItemIcon( 115993 ) }, -- Glowing Blackrock Band x 2
-			{ questID = 37320, title = L["Jewelcrafting Special Order: A Fine Choker"], name = GetSpellInfo( 170709 ), icon = GetItemIcon( 115992 ) }, -- Whispering Iron Choker x 1
-			{ questID = 37321, title = L["Jewelcrafting Special Order: A Yellow Brighter Than Gold"], name = GetSpellInfo( 170719 ), icon = GetItemIcon( 115803 ) }, -- Critical Strike Taladite x 1
-			{ questID = 37323, title = L["Jewelcrafting Special Order: Blue the Shade of Sky and Sea"], name = GetSpellInfo( 170720 ), icon = GetItemIcon( 115804 ) }, -- Haste Taladite x 2
+			{ questID = 37319, title = L["Jewelcrafting Special Order: Wedding Bands"], spellID = 170710, name = GetSpellInfo( 170710 ), icon = GetItemIcon( 115993 ) }, -- Glowing Blackrock Band x 2
+			{ questID = 37320, title = L["Jewelcrafting Special Order: A Fine Choker"], spellID = 170709, name = GetSpellInfo( 170709 ), icon = GetItemIcon( 115992 ) }, -- Whispering Iron Choker x 1
+			{ questID = 37321, title = L["Jewelcrafting Special Order: A Yellow Brighter Than Gold"], spellID = 170719, name = GetSpellInfo( 170719 ), icon = GetItemIcon( 115803 ) }, -- Critical Strike Taladite x 1
+			{ questID = 37323, title = L["Jewelcrafting Special Order: Blue the Shade of Sky and Sea"], spellID = 170720, name = GetSpellInfo( 170720 ), icon = GetItemIcon( 115804 ) }, -- Haste Taladite x 2
 			{ questID = 37324, title = L["Out of Stock: Blackrock Ore"], icon = GetItemIcon( 109118 ) }, -- Blackrock Ore x 20
 			{ questID = 37325, title = L["Out of Stock: True Iron Ore"], icon = GetItemIcon( 109119 ) }, -- True Iron Ore x 20
 		},
@@ -42,7 +43,7 @@ NS.buildingInfo = {
 	-- Scribe's Quarters
 	[select( 2, C_Garrison.GetBuildingInfo( 130 ) )] = { icon = "Interface\\ICONS\\inv_inscription_tradeskill01", rank = 2,
 		cooldown = { spellID = 176513, name = GetSpellInfo( 176513 ), icon = GetItemIcon( 119126 ) }, -- Draenor Merchant Order
-		skillName = GetSpellInfo( 45357 ), -- Inscription
+		skillName = "NPCCrafting", -- Inscription -- GetSpellInfo( 45357 )
 	},
 	-- Fishing Shack
 	[select( 2, C_Garrison.GetBuildingInfo( 135 ) )] = { icon = "Interface\\ICONS\\trade_fishing", rank = 1,
@@ -72,6 +73,7 @@ NS.skillInfo = {
 			{ spellID = 156587, name = GetSpellInfo( 156587 ), icon = GetItemIcon( 108996 ) }, -- Alchemical Catalyst
 			{ spellID = 175880, name = GetSpellInfo( 175880 ), icon = GetItemIcon( 118700 ) }, -- Secrets
 			{ spellID = 181643, name = GetSpellInfo( 181643 ), icon = GetItemIcon( 118472 ) }, -- Savage Blood
+			{ spellID = 213257, name = GetSpellInfo( 213257 ), icon = GetItemIcon( 124124 ) }, -- Blood of Sargeras
 		},
 	},
 	-- Blacksmithing
@@ -203,9 +205,11 @@ NS.UpdateCharacter = function()
 				};
 				-- Add Cooldowns
 				for cdk,cd in ipairs( NS.skillInfo[skillName].cooldowns ) do
-					NS.db["characters"][k]["skills"][sk]["cooldowns"][cdk] = IsPlayerSpell( cd.spellID ) and ( select( 2, GetSpellCooldown( cd.spellID ) ) > 0 and "complete" or "incomplete" ) or "unknown";
-					if NS.db["characters"][k]["monitor"][cd.name] == nil then
-						NS.db["characters"][k]["monitor"][cd.name] = true; -- All cooldowns monitored (true) by default, false when unchecked
+					if IsPlayerSpell( cd.spellID ) then
+						NS.db["characters"][k]["skills"][sk]["cooldowns"][cdk] = select( 2, GetSpellCooldown( cd.spellID ) ) > 0 and "complete" or "incomplete";
+						if NS.db["characters"][k]["monitor"][cd.name] == nil then
+							NS.db["characters"][k]["monitor"][cd.name] = true; -- All cooldowns monitored (true) by default, false when unchecked
+						end
 					end
 				end
 			end
@@ -213,7 +217,7 @@ NS.UpdateCharacter = function()
 	end
 	-- Buildings
 	NS.db["characters"][k]["buildings"] = {}; -- Start fresh
-	for _,building in ipairs( C_Garrison.GetBuildings() ) do
+	for _,building in ipairs( C_Garrison.GetBuildings( NS.garrisonType ) ) do
 		local _,buildingName,_,_,_,rank = C_Garrison.GetOwnedBuildingInfo( building.plotID );
 		if NS.buildingInfo[buildingName] and rank >= NS.buildingInfo[buildingName].rank then -- Only store buildings that can complete a daily cooldown/quest
 			-- Add Building
@@ -281,7 +285,7 @@ end
 NS.MinimapButton( "PCMinimapButton", "Interface\\ICONS\\inv_misc_enggizmos_swissarmy", {
 	dbpc = "minimapButtonPosition",
 	tooltip = function()
-		GameTooltip:SetText( HIGHLIGHT_FONT_COLOR_CODE .. NS.title .. FONT_COLOR_CODE_CLOSE .. " v" .. NS.versionString );
+		GameTooltip:SetText( HIGHLIGHT_FONT_COLOR_CODE .. NS.title .. FONT_COLOR_CODE_CLOSE );
 		GameTooltip:AddLine( L["Left-Click to open and close"] );
 		GameTooltip:AddLine( L["Drag to move this button"] );
 		GameTooltip:Show();
@@ -342,7 +346,7 @@ NS.OnAddonLoaded = function( event ) -- ADDON_LOADED
 	elseif IsAddOnLoaded( "Blizzard_TradeSkillUI" ) then
 		PCEventsFrame:UnregisterEvent( event );
 		TradeSkillFrame:HookScript( "OnShow", function()
-			if not IsTradeSkillLinked() and not IsTradeSkillGuild() and NS.dbpc["openWithTradeSKill"] then
+			if not C_TradeSkillUI.IsTradeSkillLinked() and not C_TradeSkillUI.IsTradeSkillGuild() and NS.dbpc["openWithTradeSKill"] then
 				NS.UI.MainFrame:SetParent( TradeSkillFrame ); -- Put into TradeSkillFrame for positioning
 				NS.UI.MainFrame:Reposition();
 				NS.UI.MainFrame:ShowTab( 1 );

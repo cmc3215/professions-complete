@@ -10,7 +10,7 @@ NS.UI.cfg = {
 	--
 	mainFrame = {
 		width		= 469,
-		height		= 450,
+		height		= 496,
 		frameStrata	= "MEDIUM",
 		frameLevel	= "TOP",
 		Init		= function( MainFrame ) end,
@@ -61,61 +61,50 @@ NS.UI.cfg = {
 						NS.Print( "Monitor tab refreshed" );
 					end,
 				} );
-				local function DCQ_OnClick( skillName, spellName )
-					-- Open TradeSkill if not open
-					if not TradeSkillFrame or not TradeSkillFrame:IsShown() or IsTradeSkillLinked() or IsTradeSkillGuild() or skillName ~= GetTradeSkillLine() then
-						CastSpellByName( skillName ); -- Attempt to open TradeSkillFrame for a known skill of sufficient level
-					end
-					-- Is TradeSkill open and ready?
-					if not TradeSkillFrame or not TradeSkillFrame:IsShown() or not IsTradeSkillReady() or skillName ~= GetTradeSkillLine() then
-						return; -- Stop execution
-					end
-					--
-					-- Reset TradeSkillFrame
-					--
-					-- Clear "Search"
-					SetTradeSkillItemNameFilter( "" );
-					TradeSkillFrameSearchBox:SetText( "" );
-					TradeSkillFrameSearchBox:ClearFocus();
-					-- Clear "Filter"
-					local haveMaterials = _G["DropDownList1Button1"];
-					local hasSkillUp = _G["DropDownList1Button2"];
-					if haveMaterials and haveMaterials.checked and haveMaterials.value == CRAFT_IS_MAKEABLE then
-						UIDropDownMenuButton_OnClick( haveMaterials ); -- Required to update UI, clears check and filter summary
-					end
-					if hasSkillUp and hasSkillUp.checked and hasSkillUp.value == TRADESKILL_FILTER_HAS_SKILL_UP then
-						UIDropDownMenuButton_OnClick( hasSkillUp ); -- Required to update UI, clears check and filter summary
-					end
-					TradeSkillOnlyShowMakeable( false ); -- Not really required, but just in case UI DropDownMenu buttons are incorrect
-					TradeSkillOnlyShowSkillUps( false ); -- ^
-					TradeSkillSetFilter( -1, -1 ); -- Clears all filters below "Have Materials" and "Has Skill Up"
-					ExpandTradeSkillSubClass( 0 ); -- Expand Headers
-					TradeSkillFrame_Update(); -- Makes several changes made visible in the UI
-					CloseDropDownMenus();
-					--
-					-- Find index for spellName, select and create if found or print error
-					--
-					local spellIndex;
-					for index = 1, GetNumTradeSkills() do
-						if spellName == GetTradeSkillInfo( index ) then
-							spellIndex = index;
-							break;
+				local function DCQ_OnClick( DCQButton, skillName, spellName, spellID )
+					if not TradeSkillFrame or not TradeSkillFrame:IsShown() or C_TradeSkillUI.IsTradeSkillLinked() or C_TradeSkillUI.IsTradeSkillGuild() or ( skillName == "NPCCrafting" and not C_TradeSkillUI.IsNPCCrafting() ) or ( skillName ~= "NPCCrafting" and skillName ~= select( 2, C_TradeSkillUI.GetTradeSkillLine() ) ) then
+						if skillName == "NPCCrafting" then
+							NS.Print( RED_FONT_COLOR_CODE .. string.format( L["\"%s\" requires Building NPC"], spellName ) .. FONT_COLOR_CODE_CLOSE );
+						else
+							CastSpellByName( skillName ); -- Open required TradeSkillFrame. Not having the profession causes no effect
 						end
-					end
-					if spellIndex then
-						TradeSkillFrame_SetSelection( spellIndex ); -- Required to update UI, highlights item in list and changes item displayed at the bottom
-						TradeSkillFrame_Update(); -- Update UI after selecting
-						DoTradeSkill( spellIndex ); -- Create
-					else
-						NS.Print( RED_FONT_COLOR_CODE .. string.format( L["Spell \"%s\" not found"], spellName ) .. FONT_COLOR_CODE_CLOSE );
+						DCQButton:GetScript( "OnEnter" )( DCQButton ); -- Updates tooltip
+					elseif C_TradeSkillUI.IsTradeSkillReady() then
+						TradeSkillFrame.RecipeList:OnLearnedTabClicked(); -- Learned Tab
+						if not TradeSkillFrame.RecipeList:IsRecipeInCurrentList( spellID ) then
+							-- Expand Categories
+							TradeSkillFrame.RecipeList.collapsedCategories = {};
+							-- Clear "Search"
+							C_TradeSkillUI.SetRecipeItemNameFilter( "" );
+							C_TradeSkillUI.SetRecipeItemLevelFilter( 0, 0 );
+							TradeSkillFrame.SearchBox:SetText( "" );
+							TradeSkillFrame.SearchBox:ClearFocus();
+							-- Clear "Filter"
+							C_TradeSkillUI.SetOnlyShowMakeableRecipes( false ); -- Clear "Have Materials" filter
+							C_TradeSkillUI.SetOnlyShowSkillUpRecipes( false ); -- Clear "Has skill up" filter
+							C_TradeSkillUI.ClearInventorySlotFilter(); -- Clear "Slots" filter
+							C_TradeSkillUI.ClearRecipeCategoryFilter(); -- Clear "Category" filter
+							C_TradeSkillUI.ClearRecipeSourceTypeFilter(); -- Clear "Sources" filter
+							CloseDropDownMenus();
+							-- Check if already selected or try to select shortly after clear and expand
+							C_Timer.After( 0.10, function()
+								if spellID ~= TradeSkillFrame.RecipeList:GetSelectedRecipeID() and not TradeSkillFrame.RecipeList:SetSelectedRecipeID( spellID ) then
+									NS.Print( RED_FONT_COLOR_CODE .. string.format( L["\"%s\" not found"], spellName ) .. FONT_COLOR_CODE_CLOSE );
+								end
+							end );
+						else
+							TradeSkillFrame.RecipeList:SetSelectedRecipeID( spellID );
+						end
+						-- Create
+						C_TradeSkillUI.CraftRecipe( spellID, 1 );
 					end
 				end
 				NS.ScrollFrame( "ScrollFrame", SubFrame, {
-					size = { 422, ( 30 * 11 - 5 ) },
+					size = { 422, ( 30 * 12 - 5 ) },
 					setPoint = { "TOPLEFT", "$parentNameColumnHeaderButton", "BOTTOMLEFT", 1, -3 },
 					buttonTemplate = "PCScrollFrameButtonTemplate",
 					udpate = {
-						numToDisplay = 11,
+						numToDisplay = 12,
 						buttonHeight = 30,
 						alwaysShowScrollBar = true,
 						UpdateFunction = function( sf )
@@ -167,10 +156,20 @@ NS.UI.cfg = {
 								local k = FauxScrollFrame_GetOffset( sf ) + num; -- key
 								b:UnlockHighlight();
 								if k <= numItems then
-									local DCQButtonOnEnter = function( self, text, line )
+									local DCQButtonOnEnter = function( self, text, skillName )
 										GameTooltip:SetOwner( self, "ANCHOR_RIGHT" );
 										GameTooltip:SetText( text );
-										if line then
+										if skillName then
+											local line = "";
+											if not TradeSkillFrame or not TradeSkillFrame:IsShown() or C_TradeSkillUI.IsTradeSkillLinked() or C_TradeSkillUI.IsTradeSkillGuild() or ( skillName == "NPCCrafting" and not C_TradeSkillUI.IsNPCCrafting() ) or ( skillName ~= "NPCCrafting" and skillName ~= select( 2, C_TradeSkillUI.GetTradeSkillLine() ) ) then
+												if skillName == "NPCCrafting" or ( skillName ~= "NPCCrafting" and ( not items[k]["skills"][1] or skillName ~= items[k]["skills"][1]["name"] ) and ( not items[k]["skills"][2] or skillName ~= items[k]["skills"][2]["name"] ) ) then
+													line = L["Visit Building NPC to Create"]; -- Shown when item MUST be crafted by NPC or character lacks required profession
+												else
+													line = string.format( L["Click to open %s"], skillName );
+												end
+											else
+												line = L["Click to Create"];
+											end
 											GameTooltip:AddLine( HIGHLIGHT_FONT_COLOR_CODE .. line .. FONT_COLOR_CODE_CLOSE );
 										end
 										GameTooltip:Show();
@@ -201,11 +200,11 @@ NS.UI.cfg = {
 													-- Clickable Button w/Icon
 													_G[bn .. "_DCQ_" .. numDCQ]:SetNormalTexture( cd.icon );
 													if items[k]["name"] == NS.currentCharacter.name then
-														_G[bn .. "_DCQ_" .. numDCQ]:SetScript( "OnClick", function() DCQ_OnClick( items[k]["skills"][i]["name"], cd.name ); end );
+														_G[bn .. "_DCQ_" .. numDCQ]:SetScript( "OnClick", function( self ) DCQ_OnClick( self, items[k]["skills"][i]["name"], cd.name, cd.spellID ); end );
 													else
 														_G[bn .. "_DCQ_" .. numDCQ]:SetScript( "OnClick", nil );
 													end
-													_G[bn .. "_DCQ_" .. numDCQ]:SetScript( "OnEnter", function( self ) DCQButtonOnEnter( self, cd.name, self:GetScript( "OnClick" ) and L["Click to Create"] or nil ); end );
+													_G[bn .. "_DCQ_" .. numDCQ]:SetScript( "OnEnter", function( self ) DCQButtonOnEnter( self, cd.name, self:GetScript( "OnClick" ) and items[k]["skills"][i]["name"] or nil ); end );
 													_G[bn .. "_DCQ_" .. numDCQ]:SetScript( "OnLeave", OnLeave );
 													-- Status Icon
 													local status = ( items[k]["skills"][i]["cooldowns"][cdk] == "complete" and time() < items[k]["resetTime"] ) and "NotReady" or "Ready";
@@ -226,27 +225,29 @@ NS.UI.cfg = {
 										if items[k]["monitor"][bldg["name"]] then
 											numDCQ = numDCQ + 1;
 											-- Cooldown/Quest - Determines values used for Clickable Button
-											local questIndex, icon, spellName, add2Tooltip;
+											local questIndex, icon, spellName, spellID, add2Tooltip;
 											if bldg["cooldown"] then
 												-- Cooldown
 												icon = NS.buildingInfo[bldg["name"]].cooldown.icon;
 												spellName = NS.buildingInfo[bldg["name"]].cooldown.name;
+												spellID = NS.buildingInfo[bldg["name"]].cooldown.spellID;
 												add2Tooltip = " - " .. spellName;
 											elseif bldg["quest"] then
 												-- Quest
 												questIndex = type( bldg["quest"] ) == "number" and bldg["quest"] or nil;
 												icon = ( questIndex and NS.buildingInfo[bldg["name"]].quests[questIndex].icon ) and NS.buildingInfo[bldg["name"]].quests[questIndex].icon or NS.buildingInfo[bldg["name"]].icon;
 												spellName = ( questIndex and NS.buildingInfo[bldg["name"]].quests[questIndex].name ) and NS.buildingInfo[bldg["name"]].quests[questIndex].name or nil;
+												spellID = spellName and NS.buildingInfo[bldg["name"]].quests[questIndex].spellID or nil;
 												add2Tooltip = questIndex and " - " .. NS.buildingInfo[bldg["name"]].quests[questIndex].title or "";
 											end
 											-- Clickable Button w/Icon
 											_G[bn .. "_DCQ_" .. numDCQ]:SetNormalTexture( icon );
 											if spellName and items[k]["name"] == NS.currentCharacter.name then
-												_G[bn .. "_DCQ_" .. numDCQ]:SetScript( "OnClick", function() DCQ_OnClick( NS.buildingInfo[bldg["name"]].skillName, spellName ); end );
+												_G[bn .. "_DCQ_" .. numDCQ]:SetScript( "OnClick", function( self ) DCQ_OnClick( self, NS.buildingInfo[bldg["name"]].skillName, spellName, spellID ); end );
 											else
 												_G[bn .. "_DCQ_" .. numDCQ]:SetScript( "OnClick", nil );
 											end
-											_G[bn .. "_DCQ_" .. numDCQ]:SetScript( "OnEnter", function( self ) DCQButtonOnEnter( self, ( bldg["name"] .. add2Tooltip ), self:GetScript( "OnClick" ) and L["Click to Create"] or nil ); end );
+											_G[bn .. "_DCQ_" .. numDCQ]:SetScript( "OnEnter", function( self ) DCQButtonOnEnter( self, ( bldg["name"] .. add2Tooltip ), self:GetScript( "OnClick" ) and NS.buildingInfo[bldg["name"]].skillName or nil ); end );
 											_G[bn .. "_DCQ_" .. numDCQ]:SetScript( "OnLeave", OnLeave );
 											-- Status Icon
 											local status = ( ( ( bldg["cooldown"] and bldg["cooldown"] == "complete" ) or ( bldg["quest"] and  bldg["quest"] == "complete" ) ) and time() < items[k]["resetTime"] ) and "NotReady" or "Ready";
@@ -283,7 +284,7 @@ NS.UI.cfg = {
 				} );
 				NS.TextFrame( "Footer", SubFrame, "", {
 					size = { 450, 16 },
-					setPoint = { "BOTTOM", "$parent", "BOTTOM", 0, 12 },
+					setPoint = { "BOTTOM", "$parent", "BOTTOM", 0, 20 },
 					justifyH = "CENTER",
 				} );
 			end,
@@ -303,7 +304,7 @@ NS.UI.cfg = {
 			tabText			= "Characters",
 			Init			= function( SubFrame )
 				NS.TextFrame( "Character", SubFrame, L["Character:"], {
-					size = { 64, 16 },
+					size = { 65, 16 },
 					setPoint = { "TOPLEFT", "$parent", "TOPLEFT", 8, -8 },
 				} );
 				NS.DropDownMenu( "CharacterDropDownMenu", SubFrame, {
@@ -477,7 +478,7 @@ NS.UI.cfg = {
 				} );
 				NS.TextFrame( "GettingStarted", SubFrame, string.format(
 						L["%s1.|r Login to a character you want to monitor.\n" ..
-						"%s2.|r Select Characters tab and uncheck what you don't want to monitor.\n" ..
+						"%s2.|r Select Characters tab and uncheck what you don't want to\n    monitor.\n" ..
 						"%s3.|r Repeat 1-2 for all characters you want included in this addon."],
 						NORMAL_FONT_COLOR_CODE, NORMAL_FONT_COLOR_CODE, NORMAL_FONT_COLOR_CODE
 					), {

@@ -1,3 +1,12 @@
+**1.5**
+* Release date: 07/19/2016
+* TOC update for patch 7.0.
+* Minor updates made for compatibility.
+* The tooltips of the icons/buttons under "Daily Cooldowns and Quests" have been updated to better describe their action.
+* Height of Professions Complete frame increased to match height of TradeSkill frame.
+* Number of characters visible without scrolling increased from 11 to 12 to match the increase of server character slots.
+* Transmute: Blood of Sargeras, a new Alchemy daily cooldown, added for upcoming Legion expansion.
+
 **1.4**
 * Release date: 03/12/2016
 * A long name-realm combination will now be truncated instead of wrapping to a second line.
