@@ -2,7 +2,7 @@
 ## Title: Professions Complete
 ## Version: 2.0
 ## Author: Clinton Caldwell
-## Notes: Monitors profession cooldowns account-wide, click icons to craft cooldowns.
+## Notes: Monitors profession cooldowns account-wide, clickable icons to craft cooldowns.
 ## SavedVariables: PROFESSIONSCOMPLETE_SAVEDVARIABLES
 ## SavedVariablesPerCharacter: PROFESSIONSCOMPLETE_SAVEDVARIABLESPERCHARACTER
 
