@@ -1,3 +1,16 @@
+**2.0**
+* Release date: 10/05/2016
+* WARNING! There are some major changes to the addon, please read below before updating.
+* You must first exit "World of Warcraft" completely.
+* Support for Warlords of Draenor Garrison profession buildings has been removed.
+* Character data will be wiped if you're upgrading, sorry about that, it was unavoidable. So, you'll need to log onto the characters you monitor after upgrading.
+* You may now add and remove profession cooldowns through the new "Professions" tab.
+* Cooldowns no longer restricted to being daily resets, cooldowns of any duration (e.g. 7 day cooldown) are supported.
+* Current character is now always shown at top of Monitor tab.
+* Supports up to 16 cooldowns per character, up from 8.
+* Cooldowns are no longer added automatically to each character, you must check which cooldowns you want to monitor.
+* Bug fix, crafting an item would not instantly update cooldowns in some but not all languages other than English.
+
 **1.5**
 * Release date: 07/19/2016
 * TOC update for patch 7.0.

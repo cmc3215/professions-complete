@@ -1,7 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\..\FrameXML\UI.xsd">
-
-	<!-- ### PCColumnHeaderButtonTemplate ### -->
+	<!-- Template -->
 	<Button name="PCColumnHeaderButtonTemplate" virtual="true">
 		<Layers>
 			<Layer level="BACKGROUND">
@@ -51,15 +50,14 @@
 		</ButtonText>
 		<NormalFont style="GameFontNormal"/>
 	</Button>
-
-	<!-- ### PCScrollFrameButtonTemplate ### -->
-	<Button name="PCScrollFrameButtonTemplate" hidden="false" virtual="true">
+	<!-- Template -->
+	<Button name="PCMonitorTabScrollFrameButtonTemplate" hidden="false" virtual="true">
 		<Size>
 			<AbsDimension x="422" y="30"/><!-- Width is all elements combined w/offsets -->
 		</Size>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parent_BG" setAllPoints="true" alphaMode="ADD">
+				<Texture name="$parentBG" setAllPoints="true" alphaMode="ADD">
 					<TexCoords left="0" right="1.0" top="0" bottom="1.0"/>
 				</Texture>
 			</Layer>
@@ -67,12 +65,12 @@
 		<!-- Frames -->
 		<Frames>
 			<!-- [Character] -->
-			<Button name="$parent_Character">
+			<Button name="$parentCharacter">
 				<Size>
 					<AbsDimension x="150" y="30"/>
 				</Size>
 				<Anchors>
-					<Anchor point="LEFT">
+					<Anchor point="TOPLEFT">
 						<Offset>
 							<AbsDimension x="8" y="0"/>
 						</Offset>
@@ -81,29 +79,29 @@
 				<ButtonText name="$parentText" justifyH="LEFT" wordwrap="false" setAllPoints="true"/>
 				<NormalFont style="GameFontHighlight"/>
 			</Button>
-			<!-- [Daily Cooldowns and Quests] -->
-			<Frame name="$parent_DCQ">
+			<!-- [Cooldowns] -->
+			<Frame name="$parentCooldowns">
 				<Size>
 					<AbsDimension x="264" y="30"/>
 				</Size>
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parent_Character" relativePoint="RIGHT"/>
+					<Anchor point="TOPLEFT" relativeTo="$parentCharacter" relativePoint="TOPRIGHT"/>
 				</Anchors>
 				<Frames>
-					<Button name="$parent_1">
+					<Button name="$parent1">
 						<Size>
 							<AbsDimension x="24" y="24"/>
 						</Size>
 						<Anchors>
-							<Anchor point="LEFT">
+							<Anchor point="TOPLEFT">
 								<Offset>
-									<AbsDimension x="8" y="0"/>
+									<AbsDimension x="8" y="-3"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
 						<Layers>
 							<Layer level="OVERLAY">
-								<Texture name="$parent_Status">
+								<Texture name="$parentStatus">
 									<Size>
 										<AbsDimension x="14" y="14"/>
 									</Size>
@@ -118,12 +116,12 @@
 							</Layer>
 						</Layers>
 					</Button>
-					<Button name="$parent_2">
+					<Button name="$parent2">
 						<Size>
 							<AbsDimension x="24" y="24"/>
 						</Size>
 						<Anchors>
-							<Anchor point="LEFT" relativeTo="$parent_1" relativePoint="RIGHT">
+							<Anchor point="LEFT" relativeTo="$parent1" relativePoint="RIGHT">
 								<Offset>
 									<AbsDimension x="8" y="0"/>
 								</Offset>
@@ -131,7 +129,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="OVERLAY">
-								<Texture name="$parent_Status">
+								<Texture name="$parentStatus">
 									<Size>
 										<AbsDimension x="14" y="14"/>
 									</Size>
@@ -146,12 +144,12 @@
 							</Layer>
 						</Layers>
 					</Button>
-					<Button name="$parent_3">
+					<Button name="$parent3">
 						<Size>
 							<AbsDimension x="24" y="24"/>
 						</Size>
 						<Anchors>
-							<Anchor point="LEFT" relativeTo="$parent_2" relativePoint="RIGHT">
+							<Anchor point="LEFT" relativeTo="$parent2" relativePoint="RIGHT">
 								<Offset>
 									<AbsDimension x="8" y="0"/>
 								</Offset>
@@ -159,7 +157,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="OVERLAY">
-								<Texture name="$parent_Status">
+								<Texture name="$parentStatus">
 									<Size>
 										<AbsDimension x="14" y="14"/>
 									</Size>
@@ -174,12 +172,12 @@
 							</Layer>
 						</Layers>
 					</Button>
-					<Button name="$parent_4">
+					<Button name="$parent4">
 						<Size>
 							<AbsDimension x="24" y="24"/>
 						</Size>
 						<Anchors>
-							<Anchor point="LEFT" relativeTo="$parent_3" relativePoint="RIGHT">
+							<Anchor point="LEFT" relativeTo="$parent3" relativePoint="RIGHT">
 								<Offset>
 									<AbsDimension x="8" y="0"/>
 								</Offset>
@@ -187,7 +185,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="OVERLAY">
-								<Texture name="$parent_Status">
+								<Texture name="$parentStatus">
 									<Size>
 										<AbsDimension x="14" y="14"/>
 									</Size>
@@ -202,12 +200,12 @@
 							</Layer>
 						</Layers>
 					</Button>
-					<Button name="$parent_5">
+					<Button name="$parent5">
 						<Size>
 							<AbsDimension x="24" y="24"/>
 						</Size>
 						<Anchors>
-							<Anchor point="LEFT" relativeTo="$parent_4" relativePoint="RIGHT">
+							<Anchor point="LEFT" relativeTo="$parent4" relativePoint="RIGHT">
 								<Offset>
 									<AbsDimension x="8" y="0"/>
 								</Offset>
@@ -215,7 +213,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="OVERLAY">
-								<Texture name="$parent_Status">
+								<Texture name="$parentStatus">
 									<Size>
 										<AbsDimension x="14" y="14"/>
 									</Size>
@@ -230,12 +228,12 @@
 							</Layer>
 						</Layers>
 					</Button>
-					<Button name="$parent_6">
+					<Button name="$parent6">
 						<Size>
 							<AbsDimension x="24" y="24"/>
 						</Size>
 						<Anchors>
-							<Anchor point="LEFT" relativeTo="$parent_5" relativePoint="RIGHT">
+							<Anchor point="LEFT" relativeTo="$parent5" relativePoint="RIGHT">
 								<Offset>
 									<AbsDimension x="8" y="0"/>
 								</Offset>
@@ -243,7 +241,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="OVERLAY">
-								<Texture name="$parent_Status">
+								<Texture name="$parentStatus">
 									<Size>
 										<AbsDimension x="14" y="14"/>
 									</Size>
@@ -258,12 +256,12 @@
 							</Layer>
 						</Layers>
 					</Button>
-					<Button name="$parent_7">
+					<Button name="$parent7">
 						<Size>
 							<AbsDimension x="24" y="24"/>
 						</Size>
 						<Anchors>
-							<Anchor point="LEFT" relativeTo="$parent_6" relativePoint="RIGHT">
+							<Anchor point="LEFT" relativeTo="$parent6" relativePoint="RIGHT">
 								<Offset>
 									<AbsDimension x="8" y="0"/>
 								</Offset>
@@ -271,7 +269,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="OVERLAY">
-								<Texture name="$parent_Status">
+								<Texture name="$parentStatus">
 									<Size>
 										<AbsDimension x="14" y="14"/>
 									</Size>
@@ -286,12 +284,12 @@
 							</Layer>
 						</Layers>
 					</Button>
-					<Button name="$parent_8">
+					<Button name="$parent8">
 						<Size>
 							<AbsDimension x="24" y="24"/>
 						</Size>
 						<Anchors>
-							<Anchor point="LEFT" relativeTo="$parent_7" relativePoint="RIGHT">
+							<Anchor point="LEFT" relativeTo="$parent7" relativePoint="RIGHT">
 								<Offset>
 									<AbsDimension x="8" y="0"/>
 								</Offset>
@@ -299,7 +297,231 @@
 						</Anchors>
 						<Layers>
 							<Layer level="OVERLAY">
-								<Texture name="$parent_Status">
+								<Texture name="$parentStatus">
+									<Size>
+										<AbsDimension x="14" y="14"/>
+									</Size>
+									<Anchors>
+										<Anchor point="BOTTOMRIGHT">
+											<Offset>
+												<AbsDimension x="-1" y="1"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+					</Button>
+					<Button name="$parent9">
+						<Size>
+							<AbsDimension x="24" y="24"/>
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent1" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="-6"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Layers>
+							<Layer level="OVERLAY">
+								<Texture name="$parentStatus">
+									<Size>
+										<AbsDimension x="14" y="14"/>
+									</Size>
+									<Anchors>
+										<Anchor point="BOTTOMRIGHT">
+											<Offset>
+												<AbsDimension x="-1" y="1"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+					</Button>
+					<Button name="$parent10">
+						<Size>
+							<AbsDimension x="24" y="24"/>
+						</Size>
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parent9" relativePoint="RIGHT">
+								<Offset>
+									<AbsDimension x="8" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Layers>
+							<Layer level="OVERLAY">
+								<Texture name="$parentStatus">
+									<Size>
+										<AbsDimension x="14" y="14"/>
+									</Size>
+									<Anchors>
+										<Anchor point="BOTTOMRIGHT">
+											<Offset>
+												<AbsDimension x="-1" y="1"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+					</Button>
+					<Button name="$parent11">
+						<Size>
+							<AbsDimension x="24" y="24"/>
+						</Size>
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parent10" relativePoint="RIGHT">
+								<Offset>
+									<AbsDimension x="8" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Layers>
+							<Layer level="OVERLAY">
+								<Texture name="$parentStatus">
+									<Size>
+										<AbsDimension x="14" y="14"/>
+									</Size>
+									<Anchors>
+										<Anchor point="BOTTOMRIGHT">
+											<Offset>
+												<AbsDimension x="-1" y="1"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+					</Button>
+					<Button name="$parent12">
+						<Size>
+							<AbsDimension x="24" y="24"/>
+						</Size>
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parent11" relativePoint="RIGHT">
+								<Offset>
+									<AbsDimension x="8" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Layers>
+							<Layer level="OVERLAY">
+								<Texture name="$parentStatus">
+									<Size>
+										<AbsDimension x="14" y="14"/>
+									</Size>
+									<Anchors>
+										<Anchor point="BOTTOMRIGHT">
+											<Offset>
+												<AbsDimension x="-1" y="1"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+					</Button>
+					<Button name="$parent13">
+						<Size>
+							<AbsDimension x="24" y="24"/>
+						</Size>
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parent12" relativePoint="RIGHT">
+								<Offset>
+									<AbsDimension x="8" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Layers>
+							<Layer level="OVERLAY">
+								<Texture name="$parentStatus">
+									<Size>
+										<AbsDimension x="14" y="14"/>
+									</Size>
+									<Anchors>
+										<Anchor point="BOTTOMRIGHT">
+											<Offset>
+												<AbsDimension x="-1" y="1"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+					</Button>
+					<Button name="$parent14">
+						<Size>
+							<AbsDimension x="24" y="24"/>
+						</Size>
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parent13" relativePoint="RIGHT">
+								<Offset>
+									<AbsDimension x="8" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Layers>
+							<Layer level="OVERLAY">
+								<Texture name="$parentStatus">
+									<Size>
+										<AbsDimension x="14" y="14"/>
+									</Size>
+									<Anchors>
+										<Anchor point="BOTTOMRIGHT">
+											<Offset>
+												<AbsDimension x="-1" y="1"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+					</Button>
+					<Button name="$parent15">
+						<Size>
+							<AbsDimension x="24" y="24"/>
+						</Size>
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parent14" relativePoint="RIGHT">
+								<Offset>
+									<AbsDimension x="8" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Layers>
+							<Layer level="OVERLAY">
+								<Texture name="$parentStatus">
+									<Size>
+										<AbsDimension x="14" y="14"/>
+									</Size>
+									<Anchors>
+										<Anchor point="BOTTOMRIGHT">
+											<Offset>
+												<AbsDimension x="-1" y="1"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+					</Button>
+					<Button name="$parent16">
+						<Size>
+							<AbsDimension x="24" y="24"/>
+						</Size>
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parent15" relativePoint="RIGHT">
+								<Offset>
+									<AbsDimension x="8" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Layers>
+							<Layer level="OVERLAY">
+								<Texture name="$parentStatus">
 									<Size>
 										<AbsDimension x="14" y="14"/>
 									</Size>
@@ -318,9 +540,159 @@
 			</Frame>
 		</Frames>
 		<!-- HighlightTexture -->
-		<HighlightTexture name="$parentHighlight" file="Interface\HELPFRAME\HelpFrameButton-Highlight" alphaMode="DISABLE">
+		<HighlightTexture name="$parentHighlight" file="Interface\Addons\ProfessionsComplete\HighlightBar-Yellow" alphaMode="DISABLE">
+			<TexCoords left="0" right="1.0" top="0" bottom="1.0"/>
+		</HighlightTexture>
+	</Button>
+	<!-- Template -->
+	<Button name="PCCharactersTabScrollFrameButtonTemplate" hidden="false" virtual="true">
+		<Size>
+			<AbsDimension x="422" y="30"/><!-- Width is LESS THAN all elements combined w/offsets -->
+		</Size>
+		<!-- Frames -->
+		<Frames>
+			<!-- Item Icon Texture before [Name] -->
+			<Button name="$parent_IconTexture">
+				<Size>
+					<AbsDimension x="24" y="24"/>
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT">
+						<Offset>
+							<AbsDimension x="10" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<!-- [Name] -->
+			<Frame name="$parent_Name">
+				<Size>
+					<AbsDimension x="240" y="30"/>
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parent_IconTexture" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="4" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<FontString name="$parentText" inherits="GameFontHighlightSmall" justifyH="LEFT" setAllPoints="true" text=""/>
+					</Layer>
+				</Layers>
+			</Frame>
+			<!-- [Check] -->
+			<CheckButton name="$parent_Check" inherits="UICheckButtonTemplate" checked="true">
+				<Size>
+					<AbsDimension x="24" y="24"/>
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parent_Name" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="112" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnEnter>
+						self:GetParent():LockHighlight();
+					</OnEnter>
+					<OnLeave>
+						self:GetParent():UnlockHighlight();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+		</Frames>
+		<!-- HighlightTexture -->
+		<HighlightTexture name="$parentHighlight" file="Interface\HelpFrame\HelpFrameButton-Highlight" alphaMode="ADD">
 			<TexCoords left="0" right="1.0" top="0" bottom="0.578125"/>
 		</HighlightTexture>
 	</Button>
-
+	<!-- Template -->
+	<Button name="PCProfessionsTabScrollFrameButtonTemplate" hidden="false" virtual="true">
+		<Size>
+			<AbsDimension x="422" y="30"/><!-- Width is LESS THAN all elements combined w/offsets -->
+		</Size>
+		<!-- Frames -->
+		<Frames>
+			<!-- Item Icon Texture before [Name] -->
+			<Button name="$parent_IconTexture">
+				<Size>
+					<AbsDimension x="24" y="24"/>
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT">
+						<Offset>
+							<AbsDimension x="10" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<!-- [Name] -->
+			<Frame name="$parent_Name">
+				<Size>
+					<AbsDimension x="240" y="30"/>
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parent_IconTexture" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="4" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<FontString name="$parentText" inherits="GameFontHighlightSmall" justifyH="LEFT" setAllPoints="true" text=""/>
+					</Layer>
+				</Layers>
+			</Frame>
+			<!-- [ImportString] -->
+			<Frame name="$parent_ImportString">
+				<Size>
+					<AbsDimension x="104" y="30"/>
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parent_Name" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<FontString name="$parentText" inherits="GameFontHighlightSmall" justifyH="RIGHT" setAllPoints="true" text=""/>
+					</Layer>
+				</Layers>
+			</Frame>
+			<!-- [Delete Button] -->
+			<Button name="$parent_DeleteButton">
+				<Size>
+					<AbsDimension x="24" y="24"/>
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parent_ImportString" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="8" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<NormalTexture file="Interface\Buttons\UI-MinusButton-UP"/>
+				<PushedTexture file="Interface\Buttons\UI-MinusButton-Down"/>
+				<HighlightTexture file="Interface\Buttons\UI-PlusButton-Hilight" alphaMode="ADD"/>
+				<Scripts>
+					<OnEnter>
+						self:GetParent():LockHighlight();
+					</OnEnter>
+					<OnLeave>
+						self:GetParent():UnlockHighlight();
+					</OnLeave>
+				</Scripts>
+			</Button>
+		</Frames>
+		<!-- HighlightTexture -->
+		<HighlightTexture name="$parentHighlight" file="Interface\HelpFrame\HelpFrameButton-Highlight" alphaMode="ADD">
+			<TexCoords left="0" right="1.0" top="0" bottom="0.578125"/>
+		</HighlightTexture>
+	</Button>
 </Ui>

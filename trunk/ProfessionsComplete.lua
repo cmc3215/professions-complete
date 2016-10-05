@@ -8,121 +8,111 @@ NS.initialized = false;
 NS.updateRequestTime = nil;
 --
 NS.selectedCharacterKey = nil;
+NS.selectedSkillLine = nil;
+NS.charactersTabItems = {};
 --
 NS.currentCharacter = {
 	name = UnitName( "player" ) .. "-" .. GetRealmName(),
-	race = UnitRace( "player" ),
-	sex = UnitSex( "player" ) == 2 and "male" or "female", -- unknown = 1, male = 2, female = 3 / Players will only be male or female
 	classColorCode = "|c" .. RAID_CLASS_COLORS[select( 2, UnitClass( "player" ) )].colorStr,
-	faction = UnitFactionGroup( "player" ), -- Updated later with character for Pandaren
 	key = nil,
 };
 --
-NS.garrisonType = LE_GARRISON_TYPE_6_0;
-NS.buildingInfo = {
-	-- Gem Boutique
-	[select( 2, C_Garrison.GetBuildingInfo( 132 ) )] = { icon = "Interface\\ICONS\\inv_misc_gem_01", rank = 2,
-		quests = {
-			-- Both
-			{ questID = 37319, title = L["Jewelcrafting Special Order: Wedding Bands"], spellID = 170710, name = GetSpellInfo( 170710 ), icon = GetItemIcon( 115993 ) }, -- Glowing Blackrock Band x 2
-			{ questID = 37320, title = L["Jewelcrafting Special Order: A Fine Choker"], spellID = 170709, name = GetSpellInfo( 170709 ), icon = GetItemIcon( 115992 ) }, -- Whispering Iron Choker x 1
-			{ questID = 37321, title = L["Jewelcrafting Special Order: A Yellow Brighter Than Gold"], spellID = 170719, name = GetSpellInfo( 170719 ), icon = GetItemIcon( 115803 ) }, -- Critical Strike Taladite x 1
-			{ questID = 37323, title = L["Jewelcrafting Special Order: Blue the Shade of Sky and Sea"], spellID = 170720, name = GetSpellInfo( 170720 ), icon = GetItemIcon( 115804 ) }, -- Haste Taladite x 2
-			{ questID = 37324, title = L["Out of Stock: Blackrock Ore"], icon = GetItemIcon( 109118 ) }, -- Blackrock Ore x 20
-			{ questID = 37325, title = L["Out of Stock: True Iron Ore"], icon = GetItemIcon( 109119 ) }, -- True Iron Ore x 20
-		},
-		skillName = GetSpellInfo( 25229 ), -- Jewelcrafting
-	},
-	-- Alchemy Lab
-	[select( 2, C_Garrison.GetBuildingInfo( 120 ) )] = { icon = "Interface\\ICONS\\trade_alchemy", rank = 2,
-		quests = {
-			-- Both
-			{ questID = 37270 }, -- Alchemy Experiment - Not stored in log, no item to craft
-		},
-	},
-	-- Scribe's Quarters
-	[select( 2, C_Garrison.GetBuildingInfo( 130 ) )] = { icon = "Interface\\ICONS\\inv_inscription_tradeskill01", rank = 2,
-		cooldown = { spellID = 176513, name = GetSpellInfo( 176513 ), icon = GetItemIcon( 119126 ) }, -- Draenor Merchant Order
-		skillName = "NPCCrafting", -- Inscription -- GetSpellInfo( 45357 )
-	},
-	-- Fishing Shack
-	[select( 2, C_Garrison.GetBuildingInfo( 135 ) )] = { icon = "Interface\\ICONS\\trade_fishing", rank = 1,
-		quests = {
-			-- Alliance
-			{ questID = 36517, title = L["Abyssal Gulper Eel"], icon = GetItemIcon( 112627 ) }, -- Abyssal Gulper Eel
-			{ questID = 36515, title = L["Blackwater Whiptail"], icon = GetItemIcon( 112626 ) }, -- Blackwater Whiptail
-			{ questID = 36514, title = L["Blind Lake Sturgeon"], icon = GetItemIcon( 112629 ) }, -- Blind Lake Sturgeon
-			{ questID = 36513, title = L[" Fat Sleeper"], icon = GetItemIcon( 112631 ) }, -- Fat Sleeper
-			{ questID = 36510, title = L["Fire Ammonite"], icon = GetItemIcon( 112628 ) }, -- Fire Ammonite
-			{ questID = 36511, title = L["Jawless Skulker"], icon = GetItemIcon( 112630 ) }, -- Jawless Skulker
-			-- Horde
-			{ questID = 35075, title = L["Abyssal Gulper Eel"], icon = GetItemIcon( 112627 ) }, -- Abyssal Gulper Eel
-			{ questID = 35074, title = L["Blackwater Whiptail"], icon = GetItemIcon( 112626 ) }, -- Blackwater Whiptail
-			{ questID = 35073, title = L["Blind Lake Sturgeon"], icon = GetItemIcon( 112629 ) }, -- Blind Lake Sturgeon
-			{ questID = 35072, title = L["Fat Sleeper"], icon = GetItemIcon( 112631 ) }, -- Fat Sleeper
-			{ questID = 35066, title = L["Fire Ammonite"], icon = GetItemIcon( 112628 ) }, -- Fire Ammonite
-			{ questID = 35071, title = L["Jawless Skulker"], icon = GetItemIcon( 112630 ) }, -- Jawless Skulker
-		},
-	},
-};
---
-NS.skillInfo = {
+NS.professionInfo = {
 	-- Alchemy
-	[GetSpellInfo( 2259 )] = { icon = "Interface\\ICONS\\trade_alchemy", maxRank = 700, skillLine = 171,
+	[171] = { name = GetSpellInfo( 2259 ),
 		cooldowns = {
-			{ spellID = 156587, name = GetSpellInfo( 156587 ), icon = GetItemIcon( 108996 ) }, -- Alchemical Catalyst
-			{ spellID = 175880, name = GetSpellInfo( 175880 ), icon = GetItemIcon( 118700 ) }, -- Secrets
-			{ spellID = 181643, name = GetSpellInfo( 181643 ), icon = GetItemIcon( 118472 ) }, -- Savage Blood
-			{ spellID = 213257, name = GetSpellInfo( 213257 ), icon = GetItemIcon( 124124 ) }, -- Blood of Sargeras
+			{ spellID = 156587, name = GetSpellInfo( 156587 ), itemID = 108996, icon = GetItemIcon( 108996 ) }, -- Alchemical Catalyst
+			{ spellID = 175880, name = GetSpellInfo( 175880 ), itemID = 118700, icon = GetItemIcon( 118700 ) }, -- Secrets of Draenor Alchemy
+			{ spellID = 213257, name = GetSpellInfo( 213257 ), itemID = 124124, icon = GetItemIcon( 124124 ) }, -- Transmute: Blood of Sargeras
+			{ spellID = 213252, name = GetSpellInfo( 213252 ), itemID = 137593, icon = GetItemIcon( 137593 ) }, -- Transmute: Cloth to Herbs
+			{ spellID = 213249, name = GetSpellInfo( 213249 ), itemID = 137591, icon = GetItemIcon( 137591 ) }, -- Transmute: Cloth to Skins
+			{ spellID = 213254, name = GetSpellInfo( 213254 ), itemID = 137594, icon = GetItemIcon( 137594 ) }, -- Transmute: Fish to Gems
+			{ spellID = 78866,  name = GetSpellInfo( 78866 ),  itemID = 54464,  icon = GetItemIcon( 54464 )  },	-- Transmute: Living Elements
+			{ spellID = 114780, name = GetSpellInfo( 114780 ), itemID = 72104,  icon = GetItemIcon( 72104 )  },	-- Transmute: Living Steel
+			{ spellID = 213255, name = GetSpellInfo( 213255 ), itemID = 137600, icon = GetItemIcon( 137600 ) }, -- Transmute: Meat to Pants
+			{ spellID = 213256, name = GetSpellInfo( 213256 ), itemID = 137599, icon = GetItemIcon( 137599 ) }, -- Transmute: Meat to Pet
+			{ spellID = 213248, name = GetSpellInfo( 213248 ), itemID = 137590, icon = GetItemIcon( 137590 ) }, -- Transmute: Ore to Cloth
+			{ spellID = 213251, name = GetSpellInfo( 213251 ), itemID = 137593, icon = GetItemIcon( 137593 ) }, -- Transmute: Ore to Herbs
+			{ spellID = 80244,  name = GetSpellInfo( 80244 ),  itemID = 51950,  icon = GetItemIcon( 51950 )  },	-- Transmute: Pyrium Bar
+			{ spellID = 181643, name = GetSpellInfo( 181643 ), itemID = 118472, icon = GetItemIcon( 118472 ) }, -- Transmute: Savage Blood
+			{ spellID = 213253, name = GetSpellInfo( 213253 ), itemID = 137593, icon = GetItemIcon( 137593 ) }, -- Transmute: Skins to Herbs
+			{ spellID = 213250, name = GetSpellInfo( 213250 ), itemID = 137592, icon = GetItemIcon( 137592 ) }, -- Transmute: Skins to Ore
+			{ spellID = 188802, name = GetSpellInfo( 188802 ), itemID = 141323, icon = GetItemIcon( 141323 ) }, -- Wild Transmutation
+			{ spellID = 188800, name = GetSpellInfo( 188800 ), itemID = 141323, icon = GetItemIcon( 141323 ) }, -- Wild Transmutation
+			{ spellID = 188801, name = GetSpellInfo( 188801 ), itemID = 141323, icon = GetItemIcon( 141323 ) }, -- Wild Transmutation
 		},
 	},
 	-- Blacksmithing
-	[GetSpellInfo( 2018 )] = { icon = "Interface\\ICONS\\trade_blacksmithing", maxRank = 700, skillLine = 164,
+	[164] = { name = GetSpellInfo( 2018 ),
 		cooldowns = {
-			{ spellID = 171690, name = GetSpellInfo( 171690 ), icon = GetItemIcon( 108257 ) }, -- Truesteel Ingot
-			{ spellID = 176090, name = GetSpellInfo( 176090 ), icon = GetItemIcon( 118720 ) }, -- Secrets
+			{ spellID = 143255, name = GetSpellInfo( 143255 ), itemID = 98717,  icon = GetItemIcon( 98717 )  }, -- Balanced Trillium Ingot
+			{ spellID = 138646, name = GetSpellInfo( 138646 ), itemID = 94111,  icon = GetItemIcon( 94111 )  }, -- Lightning Steel Ingot
+			{ spellID = 176090, name = GetSpellInfo( 176090 ), itemID = 118720, icon = GetItemIcon( 118720 ) }, -- Secrets of Draenor Blacksmithing
+			{ spellID = 171690, name = GetSpellInfo( 171690 ), itemID = 108257, icon = GetItemIcon( 108257 ) }, -- Truesteel Ingot
 		},
 	},
 	-- Enchanting
-	[GetSpellInfo( 7411 )] = { icon = "Interface\\ICONS\\trade_engraving", maxRank = 700, skillLine = 333,
+	[333] = { name = GetSpellInfo( 7411 ),
 		cooldowns = {
-			{ spellID = 169092, name = GetSpellInfo( 169092 ), icon = GetItemIcon( 113588 ) }, -- Temporal Crystal
-			{ spellID = 177043, name = GetSpellInfo( 177043 ), icon = GetItemIcon( 119293 ) }, -- Secrets
+			{ spellID = 169092, name = GetSpellInfo( 169092 ), itemID = 113588, icon = GetItemIcon( 113588 ) }, -- Temporal Crystal
+			{ spellID = 177043, name = GetSpellInfo( 177043 ), itemID = 119293, icon = GetItemIcon( 119293 ) }, -- Secrets of Draenor Enchanting
+			{ spellID = 116499, name = GetSpellInfo( 116499 ), itemID = 74248,  icon = GetItemIcon( 74248 )  }, -- Sha Crystal
 		},
 	},
 	-- Engineering
-	[GetSpellInfo( 4036 )] = { icon = "Interface\\ICONS\\trade_engineering", maxRank = 700, skillLine = 202,
+	[202] = { name = GetSpellInfo( 4036 ),
 		cooldowns = {
-			{ spellID = 169080, name = GetSpellInfo( 169080 ), icon = GetItemIcon( 111366 ) }, -- Gearspring Parts
-			{ spellID = 177054, name = GetSpellInfo( 177054 ), icon = GetItemIcon( 119299 ) }, -- Secrets
+			{ spellID = 169080, name = GetSpellInfo( 169080 ), itemID = 111366, icon = GetItemIcon( 111366 ) }, -- Gearspring Parts
+			{ spellID = 139176, name = GetSpellInfo( 139176 ), itemID = 94113,  icon = GetItemIcon( 94113 )  }, -- Jard's Peculiar Energy Source
+			{ spellID = 177054, name = GetSpellInfo( 177054 ), itemID = 119299, icon = GetItemIcon( 119299 ) }, -- Secrets of Draenor Engineering
 		},
 	},
 	-- Inscription
-	[GetSpellInfo( 45357 )] = { icon = "Interface\\ICONS\\inv_inscription_tradeskill01", maxRank = 700, skillLine = 773,
+	[773] = { name = GetSpellInfo( 45357 ),
 		cooldowns = {
-			{ spellID = 169081, name = GetSpellInfo( 169081 ), icon = GetItemIcon( 112377 ) }, -- War Paints
-			{ spellID = 177045, name = GetSpellInfo( 177045 ), icon = GetItemIcon( 119297 ) }, -- Secrets
+			{ spellID = 112996, name = GetSpellInfo( 112996 ), itemID = 79731,  icon = GetItemIcon( 79731 )  }, -- Scroll of Wisdom
+			{ spellID = 177045, name = GetSpellInfo( 177045 ), itemID = 119297, icon = GetItemIcon( 119297 ) }, -- Secrets of Draenor Inscription
+			{ spellID = 169081, name = GetSpellInfo( 169081 ), itemID = 112377, icon = GetItemIcon( 112377 ) }, -- War Paints
 		},
 	},
 	-- Jewelcrafting
-	[GetSpellInfo( 25229 )] = { icon = "Interface\\ICONS\\inv_misc_gem_01", maxRank = 700, skillLine = 755,
+	[755] = { name = GetSpellInfo( 25229 ),
 		cooldowns = {
-			{ spellID = 170700, name = GetSpellInfo( 170700 ), icon = GetItemIcon( 115524 ) }, -- Taladite Crystal
-			{ spellID = 176087, name = GetSpellInfo( 176087 ), icon = GetItemIcon( 118723 ) }, -- Secrets
+			{ spellID = 73478,  name = GetSpellInfo( 73478 ),  itemID = 52304,  icon = GetItemIcon( 52304 )  }, -- Fire Prism
+			{ spellID = 131691, name = GetSpellInfo( 131691 ), itemID = 90399,  icon = GetItemIcon( 90399 )  }, -- Imperial Amethyst
+			{ spellID = 131686, name = GetSpellInfo( 131686 ), itemID = 90401,  icon = GetItemIcon( 90401 )  }, -- Primordial Ruby
+			{ spellID = 131593, name = GetSpellInfo( 131593 ), itemID = 90395,  icon = GetItemIcon( 90395 )  }, -- River's Heart
+			{ spellID = 176087, name = GetSpellInfo( 176087 ), itemID = 118723, icon = GetItemIcon( 118723 ) }, -- Secrets of Draenor Jewelcrafting
+			{ spellID = 140050, name = GetSpellInfo( 140050 ), itemID = 95469,  icon = GetItemIcon( 95469 )  }, -- Serpent's Heart
+			{ spellID = 131695, name = GetSpellInfo( 131695 ), itemID = 90398,  icon = GetItemIcon( 90398 )  }, -- Sun's Radiance
+			{ spellID = 170700, name = GetSpellInfo( 170700 ), itemID = 115524, icon = GetItemIcon( 115524 ) }, -- Taladite Crystal
+			{ spellID = 131690, name = GetSpellInfo( 131690 ), itemID = 90400,  icon = GetItemIcon( 90400 )  }, -- Vermilion Onyx
+			{ spellID = 131688, name = GetSpellInfo( 131688 ), itemID = 90397,  icon = GetItemIcon( 90397 )  }, -- Wild Jade
 		},
 	},
 	-- Leatherworking
-	[GetSpellInfo( 2108 )] = { icon = "Interface\\ICONS\\inv_misc_armorkit_17", maxRank = 700, skillLine = 165,
+	[165] = { name = GetSpellInfo( 2108 ),
 		cooldowns = {
-			{ spellID = 171391, name = GetSpellInfo( 171391 ), icon = GetItemIcon( 110611 ) }, -- Burnished Leather
-			{ spellID = 176089, name = GetSpellInfo( 176089 ), icon = GetItemIcon( 118721 ) }, -- Secrets
+			{ spellID = 171391, name = GetSpellInfo( 171391 ), itemID = 110611, icon = GetItemIcon( 110611 ) }, -- Burnished Leather
+			{ spellID = 142976, name = GetSpellInfo( 142976 ), itemID = 98617,  icon = GetItemIcon( 98617 )  }, -- Hardened Magnificent Hide
+			{ spellID = 140040, name = GetSpellInfo( 140040 ), itemID = 72163,  icon = GetItemIcon( 72163 )  }, -- Magnificence of Leather
+			{ spellID = 140041, name = GetSpellInfo( 140041 ), itemID = 72163,  icon = GetItemIcon( 72163 )  }, -- Magnificence of Scales
+			{ spellID = 176089, name = GetSpellInfo( 176089 ), itemID = 118721, icon = GetItemIcon( 118721 ) }, -- Secrets of Draenor Leatherworking
 		},
 	},
 	-- Tailoring
-	[GetSpellInfo( 3908 )] = { icon = "Interface\\ICONS\\trade_tailoring", maxRank = 700, skillLine = 197,
+	[197] = { name = GetSpellInfo( 3908 ),
 		cooldowns = {
-			{ spellID = 168835, name = GetSpellInfo( 168835 ), icon = GetItemIcon( 111556 ) }, -- Hexweave Cloth
-			{ spellID = 176058, name = GetSpellInfo( 176058 ), icon = GetItemIcon( 118722 ) }, -- Secrets
+			{ spellID = 143011, name = GetSpellInfo( 143011 ), itemID = 98619,  icon = GetItemIcon( 98619 )  }, -- Celestial Cloth
+			{ spellID = 75146,  name = GetSpellInfo( 75146 ),  itemID = 54440,  icon = GetItemIcon( 54440 )  }, -- Dream of Azshara
+			{ spellID = 75142,  name = GetSpellInfo( 75142 ),  itemID = 54440,  icon = GetItemIcon( 54440 )  }, -- Dream of Deepholm
+			{ spellID = 94743,  name = GetSpellInfo( 94743 ),  itemID = 54440,  icon = GetItemIcon( 54440 )  }, -- Dream of Destruction
+			{ spellID = 75144,  name = GetSpellInfo( 75144 ),  itemID = 54440,  icon = GetItemIcon( 54440 )  }, -- Dream of Hyjal
+			{ spellID = 75145,  name = GetSpellInfo( 75145 ),  itemID = 54440,  icon = GetItemIcon( 54440 )  }, -- Dream of Ragnaros
+			{ spellID = 75141,  name = GetSpellInfo( 75141 ),  itemID = 54440,  icon = GetItemIcon( 54440 )  }, -- Dream of Skywall
+			{ spellID = 168835, name = GetSpellInfo( 168835 ), itemID = 111556, icon = GetItemIcon( 111556 ) }, -- Hexweave Cloth
+			{ spellID = 125557, name = GetSpellInfo( 125557 ), itemID = 92960,  icon = GetItemIcon( 92960 )  }, -- Imperial Silk
+			{ spellID = 176058, name = GetSpellInfo( 176058 ), itemID = 118722, icon = GetItemIcon( 118722 ) }, -- Secrets of Draenor Tailoring
 		},
 	},
 };
@@ -133,10 +123,17 @@ NS.DefaultSavedVariables = function()
 	return {
 		["version"] = NS.version,
 		["characters"] = {},
+		["cooldowns"] = ( function()
+			local t = {};
+			for skillLine,profession in pairs( NS.professionInfo ) do
+				t[skillLine] = CopyTable( profession.cooldowns );
+			end
+			return t;
+		end )(),
 		["showCharacterRealms"] = true,
+		["showDeleteCooldownConfirmDialog"] = true,
 	};
 end
-
 --
 NS.DefaultSavedVariablesPerCharacter = function()
 	return {
@@ -146,25 +143,25 @@ NS.DefaultSavedVariablesPerCharacter = function()
 		["openWithTradeSKill"] = true,
 	};
 end
-
 --
 NS.Upgrade = function()
 	local vars = NS.DefaultSavedVariables();
 	local version = NS.db["version"];
-	-- 1.x
-	--if version < 1.x then
-		-- No upgrades
-	--end
+	-- 2.0
+	if version < 2.0 then
+		wipe( NS.db["characters"] );
+		NS.db["cooldowns"] = vars["cooldowns"];
+		NS.db["showDeleteCooldownConfirmDialog"] = vars["showDeleteCooldownConfirmDialog"];
+	end
 	--
 	NS.db["version"] = NS.version;
 end
-
 --
 NS.UpgradePerCharacter = function()
 	local varspercharacter = NS.DefaultSavedVariablesPerCharacter();
 	local version = NS.dbpc["version"];
-	-- 1.x
-	--if version < 1.x then
+	-- 2.x
+	--if version < 2.x then
 		-- No upgrades
 	--end
 	--
@@ -176,86 +173,56 @@ end
 NS.UpdateCharacter = function()
 	local newCharacter = false;
 	-- Find/Add Character
-	local k = NS.FindKeyByName( NS.db["characters"], NS.currentCharacter.name ) or #NS.db["characters"] + 1;
+	local k = NS.FindKeyByField( NS.db["characters"], "name", NS.currentCharacter.name ) or #NS.db["characters"] + 1;
 	if not NS.db["characters"][k] then
 		newCharacter = true; -- Flag for sort
 		NS.db["characters"][k] = {
-			["name"] = NS.currentCharacter.name,					-- No need to update, if name changes, it'll be added as a new character
-			["realm"] = GetRealmName(),								-- No need to update, if realm changes, it'll be added as a new character
-			["classColorCode"] = NS.currentCharacter.classColorCode,
-			--["skills"] = {},										-- Set below each update
-			--["buildings"] = {},									-- Set below each update
-			["monitor"] = {},										-- Each building and cooldown set below when first added
+			["name"] = NS.currentCharacter.name,					-- Permanent
+			["realm"] = GetRealmName(),								-- Permanent
+			["classColorCode"] = NS.currentCharacter.classColorCode,-- Permanent
+			["professions"] = {},									-- Reset below every update
+			["monitor"] = {},										-- Set below for each known cooldown when first added
 		};
 	end
-	-- Faction (Pandaren start neutral)
-	NS.currentCharacter.faction = UnitFactionGroup( "player" );
-	-- Skills
-	NS.db["characters"][k]["skills"] = {}; -- Start fresh
-	local skill1, skill2 = GetProfessions();
-	local skills = { skill1, skill2 };
-	for sk,index in ipairs( skills ) do
-		if index then -- can be nil if character doesn't have skill 1 or 2
-			local skillName,_,_,maxRank = GetProfessionInfo( index );
-			if NS.skillInfo[skillName] and maxRank >= NS.skillInfo[skillName].maxRank then -- Only store skills that have level cap for current expansion
-				-- Add Skill
-				NS.db["characters"][k]["skills"][sk] = {
-					["name"] = skillName,	-- Jewelcrafting, etc.
-					["cooldowns"] = {},		-- Set below each update
+	-- Professions
+	wipe( NS.db["characters"][k]["professions"] ); -- Start fresh every update
+	local p1, p2 = GetProfessions();
+	local professions = { p1, p2 };
+	local monitorable = {}; -- Used to cleanup monitor table
+	for i = 1, 2 do
+		if professions[i] then -- Can be nil if character doesn't have profession 1 or 2
+			local skillLine = select( 7, GetProfessionInfo( professions[i] ) );
+			if NS.db["cooldowns"][skillLine] then -- Make sure profession exist in cooldowns, e.g. Herbalism not added
+				-- Add Profession
+				NS.db["characters"][k]["professions"][i] = {
+					["skillLine"] = skillLine,	-- Number reference for profession, e.g. 171 for Alchemy
+					["cooldowns"] = {},			-- Set below each update
 				};
 				-- Add Cooldowns
-				for cdk,cd in ipairs( NS.skillInfo[skillName].cooldowns ) do
-					if IsPlayerSpell( cd.spellID ) then
-						NS.db["characters"][k]["skills"][sk]["cooldowns"][cdk] = select( 2, GetSpellCooldown( cd.spellID ) ) > 0 and "complete" or "incomplete";
-						if NS.db["characters"][k]["monitor"][cd.name] == nil then
-							NS.db["characters"][k]["monitor"][cd.name] = true; -- All cooldowns monitored (true) by default, false when unchecked
+				for _,cd in ipairs( NS.db["cooldowns"][skillLine] ) do -- Pull from global cooldowns
+					if IsPlayerSpell( cd.spellID ) then -- Only known cooldowns
+						NS.db["characters"][k]["professions"][i]["cooldowns"][cd.spellID] = select( 2, GetSpellCooldown( cd.spellID ) );
+						if NS.db["characters"][k]["monitor"][cd.spellID] == nil then
+							NS.db["characters"][k]["monitor"][cd.spellID] = false; -- NOT monitored (false) by default, true when checked
 						end
+						monitorable[cd.spellID] = true;
 					end
 				end
 			end
 		end
 	end
-	-- Buildings
-	NS.db["characters"][k]["buildings"] = {}; -- Start fresh
-	for _,building in ipairs( C_Garrison.GetBuildings( NS.garrisonType ) ) do
-		local _,buildingName,_,_,_,rank = C_Garrison.GetOwnedBuildingInfo( building.plotID );
-		if NS.buildingInfo[buildingName] and rank >= NS.buildingInfo[buildingName].rank then -- Only store buildings that can complete a daily cooldown/quest
-			-- Add Building
-			local bk = #NS.db["characters"][k]["buildings"] + 1;
-			NS.db["characters"][k]["buildings"][bk] = {
-				["name"] = buildingName,	-- Gem Boutique, etc.
-				--["cooldown"] = ,			-- Set below each update
-				--["quest"] = ,				-- Set below each update
-			};
-			-- Add Cooldown or Quest
-			if NS.buildingInfo[buildingName].cooldown then
-				-- Cooldown
-				NS.db["characters"][k]["buildings"][bk]["cooldown"] = select( 2, GetSpellCooldown( NS.buildingInfo[buildingName].cooldown.spellID ) ) > 0 and "complete" or "incomplete";
-			else
-				-- Quest
-				for qk,q in ipairs( NS.buildingInfo[buildingName].quests ) do
-					if IsQuestFlaggedCompleted( q.questID ) then
-						NS.db["characters"][k]["buildings"][bk]["quest"] = "complete"; -- Quest complete
-						break; -- End loop
-					elseif GetQuestLogIndexByID( q.questID ) > 0 then
-						NS.db["characters"][k]["buildings"][bk]["quest"] = qk; -- Quest in log
-						break; -- End loop
-					else
-						NS.db["characters"][k]["buildings"][bk]["quest"] = "incomplete"; -- Quest incomplete, not in log
-					end
-				end
-			end
-			if NS.db["characters"][k]["monitor"][buildingName] == nil then
-				NS.db["characters"][k]["monitor"][buildingName] = true; -- All buildings monitored (true) by default, false when unchecked
+	-- Update Time
+	NS.db["characters"][k]["updateTime"] = time();
+	--
+	if not newCharacter then
+		-- Monitor Clean Up, only when NOT new character
+		for spellID in pairs( NS.db["characters"][k]["monitor"] ) do
+			if not monitorable[spellID] then
+				NS.db["characters"][k]["monitor"][spellID] = nil;
 			end
 		end
-	end
-	-- Sort character's buildings by name
-	NS.Sort( NS.db["characters"][k]["buildings"], "name", "ASC" );
-	-- Reset Time
-	NS.db["characters"][k]["resetTime"] = time() + GetQuestResetTime();
-	-- Sort Characters by realm and name, but only when adding a new character
-	if newCharacter then
+	else
+		-- Sort Characters by realm and name, only when a new character was added
 		table.sort ( NS.db["characters"],
 			function ( char1, char2 )
 				if char1["realm"] == char2["realm"] then
@@ -267,7 +234,6 @@ NS.UpdateCharacter = function()
 		);
 	end
 end
-
 --
 NS.Update = function( event )
 	if NS.updateRequestTime and ( time() - NS.updateRequestTime ) == 0 then return end -- Ignore multiple update requests in the same second
@@ -280,7 +246,7 @@ NS.Update = function( event )
 	end );
 end
 --------------------------------------------------------------------------------------------------------------------------------------------
--- Minimap Button
+-- Misc
 --------------------------------------------------------------------------------------------------------------------------------------------
 NS.MinimapButton( "PCMinimapButton", "Interface\\ICONS\\inv_misc_enggizmos_swissarmy", {
 	dbpc = "minimapButtonPosition",
@@ -294,6 +260,33 @@ NS.MinimapButton( "PCMinimapButton", "Interface\\ICONS\\inv_misc_enggizmos_swiss
 		NS.SlashCmdHandler();
 	end,
 } );
+--
+NS.AddCooldown = function( spellID, itemID, skillLine )
+	skillLine = skillLine or NS.selectedSkillLine;
+	--
+	if not spellID or not itemID then
+		return nil;
+	else
+		spellID = tonumber( spellID );
+		itemID = tonumber( itemID );
+		local name = spellID ~= 0 and GetSpellInfo( spellID ) or nil;
+		local icon = itemID ~= 0 and select( 5, GetItemInfoInstant( itemID ) ) or nil;
+		if not name or not icon then
+			return nil;
+		else
+			local cooldownKey = NS.FindKeyByField( NS.db["cooldowns"][skillLine], "spellID", spellID );
+			local which = cooldownKey and "updated" or "added";
+			--
+			if not cooldownKey then
+				cooldownKey = #NS.db["cooldowns"][skillLine] + 1;
+			end
+			NS.db["cooldowns"][skillLine][cooldownKey] = { ["spellID"] = spellID, ["name"] = name, ["itemID"] = itemID, ["icon"] = icon };
+			NS.Sort( NS.db["cooldowns"][skillLine], "name", "ASC" );
+			--
+			return which;
+		end
+	end
+end
 --------------------------------------------------------------------------------------------------------------------------------------------
 -- Slash Commands
 --------------------------------------------------------------------------------------------------------------------------------------------
@@ -354,7 +347,6 @@ NS.OnAddonLoaded = function( event ) -- ADDON_LOADED
 		end );
 	end
 end
-
 --
 NS.OnPlayerLogin = function( event ) -- PLAYER_LOGIN
 	PCEventsFrame:UnregisterEvent( event );
@@ -362,14 +354,10 @@ NS.OnPlayerLogin = function( event ) -- PLAYER_LOGIN
 		-- Call initial character update directly to avoid delay which would run intialize prematurely
 		NS.UpdateCharacter();
 		-- Initialize some variables and register events
-		NS.currentCharacter.key = NS.FindKeyByName( NS.db["characters"], NS.currentCharacter.name ); -- Must be reset when character is deleted
+		NS.currentCharacter.key = NS.FindKeyByField( NS.db["characters"], "name", NS.currentCharacter.name ); -- Must be reset when character is deleted
 		NS.selectedCharacterKey = NS.currentCharacter.key; -- Sets selected character to current character
 		--
-		PCEventsFrame:RegisterEvent( "QUEST_ACCEPTED" );
-		PCEventsFrame:RegisterEvent( "QUEST_TURNED_IN" );
-		PCEventsFrame:RegisterEvent( "QUEST_REMOVED" );
 		PCEventsFrame:RegisterEvent( "CHAT_MSG_TRADESKILLS" );
-		PCEventsFrame:RegisterEvent( "GARRISON_BUILDING_PLACED" );
 		PCEventsFrame:RegisterEvent( "SKILL_LINES_CHANGED" );
 		--
 		NS.initialized = true; -- Slash command handler won't open GUI until intialized
@@ -380,12 +368,12 @@ NS.OnPlayerLogin = function( event ) -- PLAYER_LOGIN
 		PCMinimapButton:Hide(); -- Hide if unchecked in options
 	end
 end
-
 --
 NS.OnChatMsgTradeskills = function( event, ... ) -- CHAT_MSG_TRADESKILLS
 	local arg1 = select( 1, ... );
 	if not arg1 then return end
-	if arg1:match( string.gsub( TRADESKILL_LOG_FIRSTPERSON, "%%s%.", "" ) ) then -- You create %s.
+	-- If not English update on every message, otherwise only when player craft detected
+	if ( GetLocale() ~= "enUS" and GetLocale() ~= "enGB" ) or string.match( arg1, string.gsub( TRADESKILL_LOG_FIRSTPERSON, "%%s%.", "" ) ) then -- You create %s.
 		NS.Update( event );
 	end
 end
@@ -397,11 +385,7 @@ NS.Frame( "PCEventsFrame", UIParent, {
 	OnEvent = function ( self, event, ... )
 		if		event == "ADDON_LOADED"				then	NS.OnAddonLoaded( event );
 		elseif	event == "PLAYER_LOGIN"				then	NS.OnPlayerLogin( event );
-		elseif	event == "QUEST_ACCEPTED"			then	NS.Update( event );
-		elseif	event == "QUEST_TURNED_IN"			then	NS.Update( event );
-		elseif	event == "QUEST_REMOVED"			then	NS.Update( event );
 		elseif	event == "CHAT_MSG_TRADESKILLS"		then	NS.OnChatMsgTradeskills( event, ... );
-		elseif	event == "GARRISON_BUILDING_PLACED"	then	NS.Update( event );
 		elseif	event == "SKILL_LINES_CHANGED"		then	NS.Update( event );
 		end
 	end,
