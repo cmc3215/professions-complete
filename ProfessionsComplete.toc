@@ -1,8 +1,8 @@
 ﻿## Interface: 70000
 ## Title: Professions Complete
-## Version: 1.5
+## Version: 2.0
 ## Author: Clinton Caldwell
-## Notes: Monitors profession cooldowns and garrison profession building dailies
+## Notes: Monitors profession cooldowns account-wide, click icons to craft cooldowns.
 ## SavedVariables: PROFESSIONSCOMPLETE_SAVEDVARIABLES
 ## SavedVariablesPerCharacter: PROFESSIONSCOMPLETE_SAVEDVARIABLESPERCHARACTER
 
