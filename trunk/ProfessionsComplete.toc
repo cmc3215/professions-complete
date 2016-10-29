@@ -1,6 +1,6 @@
 ﻿## Interface: 70100
 ## Title: Professions Complete
-## Version: 2.1
+## Version: 2.2
 ## Author: Clinton Caldwell
 ## Notes: Monitors profession cooldowns account-wide, clickable icons to craft cooldowns.
 ## SavedVariables: PROFESSIONSCOMPLETE_SAVEDVARIABLES
