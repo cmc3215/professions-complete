@@ -201,7 +201,9 @@ NS.UpdateCharacter = function()
 				-- Add Cooldowns
 				for _,cd in ipairs( NS.db["cooldowns"][skillLine] ) do -- Pull from global cooldowns
 					if IsPlayerSpell( cd.spellID ) then -- Only known cooldowns
-						NS.db["characters"][k]["professions"][i]["cooldowns"][cd.spellID] = select( 2, GetSpellCooldown( cd.spellID ) );
+						local start, duration, enabled = GetSpellCooldown( cd.spellID );
+						local cooldownRemaining = ( start > 0 and duration > 0 ) and math.ceil( ( start + duration - GetTime() ) ) or 0;
+						NS.db["characters"][k]["professions"][i]["cooldowns"][cd.spellID] = cooldownRemaining;
 						if NS.db["characters"][k]["monitor"][cd.spellID] == nil then
 							NS.db["characters"][k]["monitor"][cd.spellID] = false; -- NOT monitored (false) by default, true when checked
 						end
@@ -261,6 +263,15 @@ NS.MinimapButton( "PCMinimapButton", "Interface\\ICONS\\inv_misc_enggizmos_swiss
 	end,
 } );
 --
+NS.OpenWithTradeSkill = function( parent )
+	if not C_TradeSkillUI.IsTradeSkillLinked() and not C_TradeSkillUI.IsTradeSkillGuild() and NS.dbpc["openWithTradeSKill"] then
+		local parent = ( TradeSkillFrame and TradeSkillFrame:IsShown() and TradeSkillFrame ) or ( TSMCraftingTradeSkillFrame and TSMCraftingTradeSkillFrame:IsShown() and TSMCraftingTradeSkillFrame ) or ( SkilletFrame and SkilletFrame:IsShown() and SkilletFrame );
+		NS.UI.MainFrame:SetParent( parent ); -- Put into parent for positioning
+		NS.UI.MainFrame:Reposition();
+		NS.UI.MainFrame:ShowTab( 1 );
+	end
+end
+--
 NS.AddCooldown = function( spellID, itemID, skillLine )
 	skillLine = skillLine or NS.selectedSkillLine;
 	--
@@ -316,7 +327,7 @@ SlashCmdList["PROFESSIONSCOMPLETE"] = function( msg ) NS.SlashCmdHandler( msg ) 
 -- Event/Hook Handlers
 --------------------------------------------------------------------------------------------------------------------------------------------
 NS.OnAddonLoaded = function( event ) -- ADDON_LOADED
-	if IsAddOnLoaded( NS.addon ) and not NS.db then
+	if not NS.db and IsAddOnLoaded( NS.addon ) then
 		-- SavedVariables
 		if not PROFESSIONSCOMPLETE_SAVEDVARIABLES then
 			PROFESSIONSCOMPLETE_SAVEDVARIABLES = NS.DefaultSavedVariables();
@@ -336,15 +347,9 @@ NS.OnAddonLoaded = function( event ) -- ADDON_LOADED
 		if NS.dbpc["version"] < NS.version then
 			NS.UpgradePerCharacter();
 		end
-	elseif IsAddOnLoaded( "Blizzard_TradeSkillUI" ) then
+	elseif TradeSkillFrame then
 		PCEventsFrame:UnregisterEvent( event );
-		TradeSkillFrame:HookScript( "OnShow", function()
-			if not C_TradeSkillUI.IsTradeSkillLinked() and not C_TradeSkillUI.IsTradeSkillGuild() and NS.dbpc["openWithTradeSKill"] then
-				NS.UI.MainFrame:SetParent( TradeSkillFrame ); -- Put into TradeSkillFrame for positioning
-				NS.UI.MainFrame:Reposition();
-				NS.UI.MainFrame:ShowTab( 1 );
-			end
-		end );
+		TradeSkillFrame:HookScript( "OnShow", NS.OpenWithTradeSkill );
 	end
 end
 --
@@ -369,6 +374,18 @@ NS.OnPlayerLogin = function( event ) -- PLAYER_LOGIN
 	end
 end
 --
+NS.OnTradeSkillListUpdate = function( event )
+	if TSMCraftingTradeSkillFrame then
+		PCEventsFrame:UnregisterEvent( event );
+		TSMCraftingTradeSkillFrame:HookScript( "OnShow", NS.OpenWithTradeSkill );
+		NS.OpenWithTradeSkill( TSMCraftingTradeSkillFrame );
+	elseif SkilletFrame then
+		PCEventsFrame:UnregisterEvent( event );
+		SkilletFrame:HookScript( "OnShow", NS.OpenWithTradeSkill );
+		NS.OpenWithTradeSkill( SkilletFrame );
+	end
+end
+--
 NS.OnChatMsgTradeskills = function( event, ... ) -- CHAT_MSG_TRADESKILLS
 	local arg1 = select( 1, ... );
 	if not arg1 then return end
@@ -385,6 +402,7 @@ NS.Frame( "PCEventsFrame", UIParent, {
 	OnEvent = function ( self, event, ... )
 		if		event == "ADDON_LOADED"				then	NS.OnAddonLoaded( event );
 		elseif	event == "PLAYER_LOGIN"				then	NS.OnPlayerLogin( event );
+		elseif	event == "TRADE_SKILL_LIST_UPDATE"	then	NS.OnTradeSkillListUpdate( event );
 		elseif	event == "CHAT_MSG_TRADESKILLS"		then	NS.OnChatMsgTradeskills( event, ... );
 		elseif	event == "SKILL_LINES_CHANGED"		then	NS.Update( event );
 		end
@@ -392,5 +410,6 @@ NS.Frame( "PCEventsFrame", UIParent, {
 	OnLoad = function( self )
 		self:RegisterEvent( "ADDON_LOADED" );
 		self:RegisterEvent( "PLAYER_LOGIN" );
+		self:RegisterEvent( "TRADE_SKILL_LIST_UPDATE" );
 	end,
 } );

@@ -1,3 +1,8 @@
+**2.2**
+* Release date: 10/29/2016
+* Bug fix, in the overhaul for v2.0 the Ready/NotReady cooldown remaining calculation was incorrectly changed and would become inaccurate over time in some situations. Thanks to Curse user kajlesf for reporting this bug.
+* Now supports opening/create with TradeSkillMaster_Crafting or Skillet. Thanks to Curse user q3fuba for submitting example code changes for Skillet.
+
 **2.1**
 * Release date: 10/25/2016
 * TOC updated for patch 7.1.
