@@ -1,3 +1,9 @@
+**2.3**
+* Release date: 11/01/2016
+* Bug fix, AGAIN - In the overhaul for v2.0 the Ready/NotReady cooldown remaining calculation was incorrectly changed and would become inaccurate over time in some situations. You must log into your characters to update cooldown remaining times. Thanks to Curse user kajlesf for reporting this bug.
+* The following cooldowns have been found to not work correctly as far as cooldown remaining calculation: Prismatic Sphere, Void Sphere, and Brilliant Glass
+* Several additional cooldowns have been added to the list of Defaults, this does not affect users that are upgrading unless they reset Professions to Defaults. Thanks to Curse user kajlesf for providing this information.
+
 **2.2**
 * Release date: 10/29/2016
 * Bug fix, in the overhaul for v2.0 the Ready/NotReady cooldown remaining calculation was incorrectly changed and would become inaccurate over time in some situations. Thanks to Curse user kajlesf for reporting this bug.
