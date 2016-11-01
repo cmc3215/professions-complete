@@ -21,32 +21,92 @@ NS.professionInfo = {
 	-- Alchemy
 	[171] = { name = GetSpellInfo( 2259 ),
 		cooldowns = {
+			-- Alchemy Transmutes that SHARE 1 day CD (reset daily @ DAILY RESET TIME) with others transmutes in all expansions are marked on comments with -> (**shared 1 day CD with others**)
+			-- CLASSIC (VANILLA EXPANSION)
+			-- 2 Bars transmute
+			{ spellID = 11479,  name = GetSpellInfo( 11479 ),  itemID = 3577,  icon = GetItemIcon( 3577 )    }, -- Transmute: Iron to Gold (**shared 1 day CD with others**)
+			{ spellID = 11480,  name = GetSpellInfo( 11480 ),  itemID = 6037,  icon = GetItemIcon( 6037 )    }, -- Transmute: Mithril to Truesilver (**shared 1 day CD with others**)
+			-- 8 classic essence transmute
+			{ spellID = 17559,  name = GetSpellInfo( 17559 ),  itemID = 7078,  icon = GetItemIcon( 7078 )    }, -- Transmute: Air to Fire (**shared 1 day CD with others**)
+			{ spellID = 17560,  name = GetSpellInfo( 17560 ),  itemID = 7076,  icon = GetItemIcon( 7076 )    }, -- Transmute: Fire to Earth (**shared 1 day CD with others**)
+			{ spellID = 17561,  name = GetSpellInfo( 17561 ),  itemID = 7080,  icon = GetItemIcon( 7080 )    }, -- Transmute: Earth to Water (**shared 1 day CD with others**)
+			{ spellID = 17562,  name = GetSpellInfo( 17562 ),  itemID = 7082,  icon = GetItemIcon( 7082 )    }, -- Transmute: Water to Air (**shared 1 day CD with others**)
+			{ spellID = 17563,  name = GetSpellInfo( 17563 ),  itemID = 7080,  icon = GetItemIcon( 7080 )    }, -- Transmute: Undeath to Water (**shared 1 day CD with others**)
+			{ spellID = 17564,  name = GetSpellInfo( 17564 ),  itemID = 12808, icon = GetItemIcon( 12808 )   }, -- Transmute: Water to Undeath (**shared 1 day CD with others**)
+			{ spellID = 17565,  name = GetSpellInfo( 17565 ),  itemID = 7076,  icon = GetItemIcon( 7076 )    }, -- Transmute: Life to Earth (**shared 1 day CD with others**)
+			{ spellID = 17566,  name = GetSpellInfo( 17566 ),  itemID = 12803, icon = GetItemIcon( 12803 )   }, -- Transmute: Earth to Life (**shared 1 day CD with others**)
+			-- BC Expansion
+			-- 10 Primals transmute
+			{ spellID = 28566,  name = GetSpellInfo( 28566 ),  itemID = 21884,  icon = GetItemIcon( 21884 )  }, -- Transmute: Primal Air to Fire (**shared 1 day CD with others**)
+			{ spellID = 28567,  name = GetSpellInfo( 28567 ),  itemID = 21885,  icon = GetItemIcon( 21885 )  }, -- Transmute: Primal Earth to Water (**shared 1 day CD with others**)
+			{ spellID = 28568,  name = GetSpellInfo( 28568 ),  itemID = 22452,  icon = GetItemIcon( 22452 )  }, -- Transmute: Primal Fire to Earth (**shared 1 day CD with others**)
+			{ spellID = 28569,  name = GetSpellInfo( 28569 ),  itemID = 22451,  icon = GetItemIcon( 22451 )  }, -- Transmute: Primal Water to Air (**shared 1 day CD with others**)
+			{ spellID = 28580,  name = GetSpellInfo( 28580 ),  itemID = 21885,  icon = GetItemIcon( 21885 )  }, -- Transmute: Primal Shadow to Water (**shared 1 day CD with others**)
+			{ spellID = 28581,  name = GetSpellInfo( 28581 ),  itemID = 22456,  icon = GetItemIcon( 22456 )  }, -- Transmute: Primal Water to Shadow (**shared 1 day CD with others**)
+			{ spellID = 28582,  name = GetSpellInfo( 28582 ),  itemID = 21884,  icon = GetItemIcon( 21884 )  }, -- Transmute: Primal Mana to Fire (**shared 1 day CD with others**)
+			{ spellID = 28583,  name = GetSpellInfo( 28583 ),  itemID = 22457,  icon = GetItemIcon( 22457 )  }, -- Transmute: Primal Fire to Mana (**shared 1 day CD with others**)
+			{ spellID = 28584,  name = GetSpellInfo( 28584 ),  itemID = 22452,  icon = GetItemIcon( 22452 )  }, -- Transmute: Primal Life to Earth (**shared 1 day CD with others**)
+			{ spellID = 28585,  name = GetSpellInfo( 28585 ),  itemID = 21886,  icon = GetItemIcon( 21886 )  }, -- Transmute: Primal Earth to Life (**shared 1 day CD with others**)
+			-- LK Expansion
+			{ spellID = 60893,  name = GetSpellInfo( 60893 ),  itemID = 115460, icon = GetItemIcon( 115460 ) }, -- Northrend Alchemy Research (3 days CD recipe research)
+			-- LK Eternals transmute
+			{ spellID = 53771,  name = GetSpellInfo( 53771 ),  itemID = 35627,  icon = GetItemIcon( 35627 )  }, -- Transmute: Eternal Life to Shadow (**shared 1 day CD with others**)
+			{ spellID = 53773,  name = GetSpellInfo( 53773 ),  itemID = 36860,  icon = GetItemIcon( 36860 )  }, -- Transmute: Eternal Life to Fire (**shared 1 day CD with others**)
+			{ spellID = 53774,  name = GetSpellInfo( 53774 ),  itemID = 35622,  icon = GetItemIcon( 35622 )  }, -- Transmute: Eternal Fire to Water (**shared 1 day CD with others**)
+			{ spellID = 53775,  name = GetSpellInfo( 53775 ),  itemID = 35625,  icon = GetItemIcon( 35625 )  }, -- Transmute: Eternal Fire to Life (**shared 1 day CD with others**)
+			{ spellID = 53776,  name = GetSpellInfo( 53776 ),  itemID = 35622,  icon = GetItemIcon( 35622 )  }, -- Transmute: Eternal Air to Water (**shared 1 day CD with others**)
+			{ spellID = 53777,  name = GetSpellInfo( 53777 ),  itemID = 35624,  icon = GetItemIcon( 35624 )  }, -- Transmute: Eternal Air to Earth (**shared 1 day CD with others**)
+			{ spellID = 53779,  name = GetSpellInfo( 53779 ),  itemID = 35624,  icon = GetItemIcon( 35624 )  }, -- Transmute: Eternal Shadow to Earth (**shared 1 day CD with others**)
+			{ spellID = 53780,  name = GetSpellInfo( 53780 ),  itemID = 35625,  icon = GetItemIcon( 35625 )  }, -- Transmute: Eternal Shadow to Life (**shared 1 day CD with others**)
+			{ spellID = 53781,  name = GetSpellInfo( 53781 ),  itemID = 35623,  icon = GetItemIcon( 35623 )  }, -- Transmute: Eternal Earth to Air (**shared 1 day CD with others**)
+			{ spellID = 53782,  name = GetSpellInfo( 53782 ),  itemID = 35627,  icon = GetItemIcon( 35627 )  }, -- Transmute: Eternal Earth to Shadow (**shared 1 day CD with others**)
+			{ spellID = 53783,  name = GetSpellInfo( 53783 ),  itemID = 35623,  icon = GetItemIcon( 35623 )  }, -- Transmute: Eternal Water to Air (**shared 1 day CD with others**)
+			{ spellID = 53784,  name = GetSpellInfo( 53784 ),  itemID = 36860,  icon = GetItemIcon( 36860 )  }, -- Transmute: Eternal Water to Fire (**shared 1 day CD with others**)
+			-- 6 Alchemy LK gems transmute
+			{ spellID = 66658,  name = GetSpellInfo( 66658 ),  itemID = 36931,  icon = GetItemIcon( 36931 )  }, -- Transmute: Ametrine (**shared 1 day CD with others**)
+			{ spellID = 66659,  name = GetSpellInfo( 66659 ),  itemID = 36919,  icon = GetItemIcon( 36919 )  }, -- Transmute: Cardinal Ruby (**shared 1 day CD with others**)
+			{ spellID = 66660,  name = GetSpellInfo( 66660 ),  itemID = 36922,  icon = GetItemIcon( 36922 )  }, -- Transmute: King's Amber (**shared 1 day CD with others**)
+			{ spellID = 66662,  name = GetSpellInfo( 66662 ),  itemID = 36928,  icon = GetItemIcon( 36928 )  }, -- Transmute: Dreadstone (**shared 1 day CD with others**)
+			{ spellID = 66663,  name = GetSpellInfo( 66663 ),  itemID = 36925,  icon = GetItemIcon( 36925 )  }, -- Transmute: Majestic Zircon (**shared 1 day CD with others**)
+			{ spellID = 66664,  name = GetSpellInfo( 66664 ),  itemID = 36934,  icon = GetItemIcon( 36934 )  }, -- Transmute: Eye of Zul (**shared 1 day CD with others**)
+			-- CATA Expansion
+			{ spellID = 78866,  name = GetSpellInfo( 78866 ),  itemID = 54464,  icon = GetItemIcon( 54464 )  }, -- Transmute: Living Elements (**shared 1 day CD with others**)
+			{ spellID = 80244,  name = GetSpellInfo( 80244 ),  itemID = 51950,  icon = GetItemIcon( 51950 )  }, -- Transmute: Pyrium Bar (**shared 1 day CD with others**)
+			-- PANDARIA Expansion
+			{ spellID = 114780, name = GetSpellInfo( 114780 ), itemID = 72104,  icon = GetItemIcon( 72104 )  }, -- Transmute: Living Steel (**shared 1 day CD with others**)
+			-- WoD Expansion
 			{ spellID = 156587, name = GetSpellInfo( 156587 ), itemID = 108996, icon = GetItemIcon( 108996 ) }, -- Alchemical Catalyst
 			{ spellID = 175880, name = GetSpellInfo( 175880 ), itemID = 118700, icon = GetItemIcon( 118700 ) }, -- Secrets of Draenor Alchemy
+			{ spellID = 181643, name = GetSpellInfo( 181643 ), itemID = 118472, icon = GetItemIcon( 118472 ) }, -- Transmute: Savage Blood (**shared 1 day CD with others**)
+			-- LEGION EXPANSION
+			-- All 10 Legion transmutation spells are discoveries and share 1 day CD
 			{ spellID = 213257, name = GetSpellInfo( 213257 ), itemID = 124124, icon = GetItemIcon( 124124 ) }, -- Transmute: Blood of Sargeras
 			{ spellID = 213252, name = GetSpellInfo( 213252 ), itemID = 137593, icon = GetItemIcon( 137593 ) }, -- Transmute: Cloth to Herbs
 			{ spellID = 213249, name = GetSpellInfo( 213249 ), itemID = 137591, icon = GetItemIcon( 137591 ) }, -- Transmute: Cloth to Skins
-			{ spellID = 213254, name = GetSpellInfo( 213254 ), itemID = 137594, icon = GetItemIcon( 137594 ) }, -- Transmute: Fish to Gems
-			{ spellID = 78866,  name = GetSpellInfo( 78866 ),  itemID = 54464,  icon = GetItemIcon( 54464 )  },	-- Transmute: Living Elements
-			{ spellID = 114780, name = GetSpellInfo( 114780 ), itemID = 72104,  icon = GetItemIcon( 72104 )  },	-- Transmute: Living Steel
-			{ spellID = 213255, name = GetSpellInfo( 213255 ), itemID = 137600, icon = GetItemIcon( 137600 ) }, -- Transmute: Meat to Pants
-			{ spellID = 213256, name = GetSpellInfo( 213256 ), itemID = 137599, icon = GetItemIcon( 137599 ) }, -- Transmute: Meat to Pet
 			{ spellID = 213248, name = GetSpellInfo( 213248 ), itemID = 137590, icon = GetItemIcon( 137590 ) }, -- Transmute: Ore to Cloth
 			{ spellID = 213251, name = GetSpellInfo( 213251 ), itemID = 137593, icon = GetItemIcon( 137593 ) }, -- Transmute: Ore to Herbs
-			{ spellID = 80244,  name = GetSpellInfo( 80244 ),  itemID = 51950,  icon = GetItemIcon( 51950 )  },	-- Transmute: Pyrium Bar
-			{ spellID = 181643, name = GetSpellInfo( 181643 ), itemID = 118472, icon = GetItemIcon( 118472 ) }, -- Transmute: Savage Blood
 			{ spellID = 213253, name = GetSpellInfo( 213253 ), itemID = 137593, icon = GetItemIcon( 137593 ) }, -- Transmute: Skins to Herbs
 			{ spellID = 213250, name = GetSpellInfo( 213250 ), itemID = 137592, icon = GetItemIcon( 137592 ) }, -- Transmute: Skins to Ore
-			{ spellID = 188802, name = GetSpellInfo( 188802 ), itemID = 141323, icon = GetItemIcon( 141323 ) }, -- Wild Transmutation
-			{ spellID = 188800, name = GetSpellInfo( 188800 ), itemID = 141323, icon = GetItemIcon( 141323 ) }, -- Wild Transmutation
-			{ spellID = 188801, name = GetSpellInfo( 188801 ), itemID = 141323, icon = GetItemIcon( 141323 ) }, -- Wild Transmutation
+			{ spellID = 213254, name = GetSpellInfo( 213254 ), itemID = 137594, icon = GetItemIcon( 137594 ) }, -- Transmute: Fish to Gems
+			{ spellID = 213255, name = GetSpellInfo( 213255 ), itemID = 137600, icon = GetItemIcon( 137600 ) }, -- Transmute: Meat to Pants
+			-- Transmute: Meat to Pet is special, this have 1 day CD and share with others Legion Transmute, but item that is
+			-- produce (Pulsating Sac) is Binds when picked up (BoP) and Unique with 7 day (real time) duration time,
+			-- that basically means 7 day CD for this transmute or until you have Pulsating Sac in your bags (u can delete it)!!
+			{ spellID = 213256, name = GetSpellInfo( 213256 ), itemID = 137599, icon = GetItemIcon( 137599 ) }, -- Transmute: Meat to Pet
+			-- Wild Transmutation have 3 ranks (all other Legion transmutation have only 1 rank) these DONT share daily CD with 10 others Legion transmute
+			-- Rank 1 is learned by recipe (sold by vendor), next two ranks are learned by discovery performing previous rank
+			{ spellID = 188800, name = GetSpellInfo( 188800 ), itemID = 141323, icon = GetItemIcon( 141323 ) }, -- Wild Transmutation Rank 1
+			{ spellID = 188801, name = GetSpellInfo( 188801 ), itemID = 141323, icon = GetItemIcon( 141323 ) }, -- Wild Transmutation Rank 2
+			{ spellID = 188802, name = GetSpellInfo( 188802 ), itemID = 141323, icon = GetItemIcon( 141323 ) }, -- Wild Transmutation Rank 3
 		},
 	},
 	-- Blacksmithing
 	[164] = { name = GetSpellInfo( 2018 ),
 		cooldowns = {
-			{ spellID = 143255, name = GetSpellInfo( 143255 ), itemID = 98717,  icon = GetItemIcon( 98717 )  }, -- Balanced Trillium Ingot
-			{ spellID = 138646, name = GetSpellInfo( 138646 ), itemID = 94111,  icon = GetItemIcon( 94111 )  }, -- Lightning Steel Ingot
+			-- PANDARIA Expansion
+			{ spellID = 143255, name = GetSpellInfo( 143255 ), itemID = 98717,  icon = GetItemIcon( 98717 )  }, -- Balanced Trillium Ingot (1 day CD, also discovery new BS recipes)
+			{ spellID = 138646, name = GetSpellInfo( 138646 ), itemID = 94111,  icon = GetItemIcon( 94111 )  }, -- Lightning Steel Ingot (1 day CD, also discovery new BS recipes)
+			-- WoD Expansion
 			{ spellID = 176090, name = GetSpellInfo( 176090 ), itemID = 118720, icon = GetItemIcon( 118720 ) }, -- Secrets of Draenor Blacksmithing
 			{ spellID = 171690, name = GetSpellInfo( 171690 ), itemID = 108257, icon = GetItemIcon( 108257 ) }, -- Truesteel Ingot
 		},
@@ -54,64 +114,95 @@ NS.professionInfo = {
 	-- Enchanting
 	[333] = { name = GetSpellInfo( 7411 ),
 		cooldowns = {
+			-- CLASSIC Exp (Vanilla Expansion)
+			-- Void Sphere and Prismatic Sphere have static 2-day shared CD
+			--{ spellID = 28027,  name = GetSpellInfo( 28027 ),  itemID = 22460,  icon = GetItemIcon( 22460 )  }, -- Prismatic Sphere (static 2-day shared CD)
+			--{ spellID = 28028,  name = GetSpellInfo( 28028 ),  itemID = 22459,  icon = GetItemIcon( 22459 )  }, -- Void Sphere (static 2-day shared CD)
+			-- PANDARIA Expansion
+			{ spellID = 116499, name = GetSpellInfo( 116499 ), itemID = 74248,  icon = GetItemIcon( 74248 )  }, -- Sha Crystal
+			-- WoD Expansion
 			{ spellID = 169092, name = GetSpellInfo( 169092 ), itemID = 113588, icon = GetItemIcon( 113588 ) }, -- Temporal Crystal
 			{ spellID = 177043, name = GetSpellInfo( 177043 ), itemID = 119293, icon = GetItemIcon( 119293 ) }, -- Secrets of Draenor Enchanting
-			{ spellID = 116499, name = GetSpellInfo( 116499 ), itemID = 74248,  icon = GetItemIcon( 74248 )  }, -- Sha Crystal
 		},
 	},
 	-- Engineering
 	[202] = { name = GetSpellInfo( 4036 ),
 		cooldowns = {
-			{ spellID = 169080, name = GetSpellInfo( 169080 ), itemID = 111366, icon = GetItemIcon( 111366 ) }, -- Gearspring Parts
+			-- PANDARIA Expansion
 			{ spellID = 139176, name = GetSpellInfo( 139176 ), itemID = 94113,  icon = GetItemIcon( 94113 )  }, -- Jard's Peculiar Energy Source
+			-- WoD Expansion
+			{ spellID = 169080, name = GetSpellInfo( 169080 ), itemID = 111366, icon = GetItemIcon( 111366 ) }, -- Gearspring Parts
 			{ spellID = 177054, name = GetSpellInfo( 177054 ), itemID = 119299, icon = GetItemIcon( 119299 ) }, -- Secrets of Draenor Engineering
 		},
 	},
 	-- Inscription
 	[773] = { name = GetSpellInfo( 45357 ),
 		cooldowns = {
+			-- PANDARIA Expansion
 			{ spellID = 112996, name = GetSpellInfo( 112996 ), itemID = 79731,  icon = GetItemIcon( 79731 )  }, -- Scroll of Wisdom
+			-- WoD Expansion
 			{ spellID = 177045, name = GetSpellInfo( 177045 ), itemID = 119297, icon = GetItemIcon( 119297 ) }, -- Secrets of Draenor Inscription
 			{ spellID = 169081, name = GetSpellInfo( 169081 ), itemID = 112377, icon = GetItemIcon( 112377 ) }, -- War Paints
+			-- Forged Documents Daily Quest with Inscription daily CD
+			{ spellID = 89244,  name = GetSpellInfo( 89244 ),  itemID = 62056,  icon = GetItemIcon( 62056 )  }, -- Forged Documents (Ally)  http://www.wowhead.com/spell=89244/forged-documents
+			{ spellID = 86654,  name = GetSpellInfo( 86654 ),  itemID = 63276,  icon = GetItemIcon( 63276 )  }, -- Forged Documents (Horde)  http://www.wowhead.com/spell=86654/forged-documents
 		},
 	},
 	-- Jewelcrafting
 	[755] = { name = GetSpellInfo( 25229 ),
 		cooldowns = {
-			{ spellID = 73478,  name = GetSpellInfo( 73478 ),  itemID = 52304,  icon = GetItemIcon( 52304 )  }, -- Fire Prism
-			{ spellID = 131691, name = GetSpellInfo( 131691 ), itemID = 90399,  icon = GetItemIcon( 90399 )  }, -- Imperial Amethyst
-			{ spellID = 131686, name = GetSpellInfo( 131686 ), itemID = 90401,  icon = GetItemIcon( 90401 )  }, -- Primordial Ruby
-			{ spellID = 131593, name = GetSpellInfo( 131593 ), itemID = 90395,  icon = GetItemIcon( 90395 )  }, -- River's Heart
-			{ spellID = 176087, name = GetSpellInfo( 176087 ), itemID = 118723, icon = GetItemIcon( 118723 ) }, -- Secrets of Draenor Jewelcrafting
+			-- BC Expansion
+			--{ spellID = 47280,  name = GetSpellInfo( 47280 ),  itemID = 35945,  icon = GetItemIcon( 35945 )  }, -- Brilliant Glass (have static 20h CD)
+			-- LK expansion
+			--{ spellID = 62242,  name = GetSpellInfo( 62242 ),  itemID = 44943,  icon = GetItemIcon( 44943 )  }, -- Icy Prism (DOESNT HAVE CD)
+			-- CATA Expansion
+			{ spellID = 73478,  name = GetSpellInfo( 73478 ),  itemID = 52304,  icon = GetItemIcon( 52304 )  }, -- Fire Prism (daily CD)
+			-- PANDARIA Expansion
+			-- MoP all 6 gem research share daily CD (reset 9:00AM realm time). You can only perform one Pandaria research per day!
+			-- If you researched all recipes for 1 colored gem doing the same research will discover random color gem recipe. Total 68 research/discovery recipes.
+			{ spellID = 131691, name = GetSpellInfo( 131691 ), itemID = 90399,  icon = GetItemIcon( 90399 )  }, -- Imperial Amethyst (PURPLE Gem 14 recipes research)
+			{ spellID = 131686, name = GetSpellInfo( 131686 ), itemID = 90401,  icon = GetItemIcon( 90401 )  }, -- Primordial Ruby (RED Gem 5 recipes research)
+			{ spellID = 131593, name = GetSpellInfo( 131593 ), itemID = 90395,  icon = GetItemIcon( 90395 )  }, -- River's Heart (BLUE Gem 4 recipes research)
+			{ spellID = 131695, name = GetSpellInfo( 131695 ), itemID = 90398,  icon = GetItemIcon( 90398 )  }, -- Sun's Radiance (YELLOW Gem 5 recipes research)
+			{ spellID = 131690, name = GetSpellInfo( 131690 ), itemID = 90400,  icon = GetItemIcon( 90400 )  }, -- Vermilion Onyx (ORANGE Gem 22 recipes research)
+			{ spellID = 131688, name = GetSpellInfo( 131688 ), itemID = 90397,  icon = GetItemIcon( 90397 )  }, -- Wild Jade (GREEN Gem 18 recipes research)
+			-- MoP Serpent's Heart daily CD research, DOESNT share daily CD with others 6 MoP gem research
 			{ spellID = 140050, name = GetSpellInfo( 140050 ), itemID = 95469,  icon = GetItemIcon( 95469 )  }, -- Serpent's Heart
-			{ spellID = 131695, name = GetSpellInfo( 131695 ), itemID = 90398,  icon = GetItemIcon( 90398 )  }, -- Sun's Radiance
+			-- WoD Expansion
 			{ spellID = 170700, name = GetSpellInfo( 170700 ), itemID = 115524, icon = GetItemIcon( 115524 ) }, -- Taladite Crystal
-			{ spellID = 131690, name = GetSpellInfo( 131690 ), itemID = 90400,  icon = GetItemIcon( 90400 )  }, -- Vermilion Onyx
-			{ spellID = 131688, name = GetSpellInfo( 131688 ), itemID = 90397,  icon = GetItemIcon( 90397 )  }, -- Wild Jade
+			{ spellID = 176087, name = GetSpellInfo( 176087 ), itemID = 118723, icon = GetItemIcon( 118723 ) }, -- Secrets of Draenor Jewelcrafting
 		},
 	},
 	-- Leatherworking
 	[165] = { name = GetSpellInfo( 2108 ),
 		cooldowns = {
+			-- PANDARIA Expansion
+			-- Magnificence of Leather and Magnificence Scales SHARE Daily CD
+			{ spellID = 140040, name = GetSpellInfo( 140040 ), itemID = 72163,  icon = GetItemIcon( 72163 )  }, -- Magnificence of Leather (1 day CD, also discovery new LW recipes)
+			{ spellID = 140041, name = GetSpellInfo( 140041 ), itemID = 72163,  icon = GetItemIcon( 72163 )  }, -- Magnificence of Scales (1 day CD, also discovery new LW recipes)
+			{ spellID = 142976, name = GetSpellInfo( 142976 ), itemID = 98617,  icon = GetItemIcon( 98617 )  }, -- Hardened Magnificent Hide (daily CD, also discovery new LW recipes)
+			-- WoD Expansion
 			{ spellID = 171391, name = GetSpellInfo( 171391 ), itemID = 110611, icon = GetItemIcon( 110611 ) }, -- Burnished Leather
-			{ spellID = 142976, name = GetSpellInfo( 142976 ), itemID = 98617,  icon = GetItemIcon( 98617 )  }, -- Hardened Magnificent Hide
-			{ spellID = 140040, name = GetSpellInfo( 140040 ), itemID = 72163,  icon = GetItemIcon( 72163 )  }, -- Magnificence of Leather
-			{ spellID = 140041, name = GetSpellInfo( 140041 ), itemID = 72163,  icon = GetItemIcon( 72163 )  }, -- Magnificence of Scales
 			{ spellID = 176089, name = GetSpellInfo( 176089 ), itemID = 118721, icon = GetItemIcon( 118721 ) }, -- Secrets of Draenor Leatherworking
 		},
 	},
 	-- Tailoring
 	[197] = { name = GetSpellInfo( 3908 ),
 		cooldowns = {
-			{ spellID = 143011, name = GetSpellInfo( 143011 ), itemID = 98619,  icon = GetItemIcon( 98619 )  }, -- Celestial Cloth
+			-- CATA Expansion
+			-- Cata Dreamcloths spells have each 7 days CD (6d 18h) so they DONT share CD with each other Dreams spells (are also used as currency for higher Cata tailoring recipes)
 			{ spellID = 75146,  name = GetSpellInfo( 75146 ),  itemID = 54440,  icon = GetItemIcon( 54440 )  }, -- Dream of Azshara
 			{ spellID = 75142,  name = GetSpellInfo( 75142 ),  itemID = 54440,  icon = GetItemIcon( 54440 )  }, -- Dream of Deepholm
-			{ spellID = 94743,  name = GetSpellInfo( 94743 ),  itemID = 54440,  icon = GetItemIcon( 54440 )  }, -- Dream of Destruction
 			{ spellID = 75144,  name = GetSpellInfo( 75144 ),  itemID = 54440,  icon = GetItemIcon( 54440 )  }, -- Dream of Hyjal
 			{ spellID = 75145,  name = GetSpellInfo( 75145 ),  itemID = 54440,  icon = GetItemIcon( 54440 )  }, -- Dream of Ragnaros
 			{ spellID = 75141,  name = GetSpellInfo( 75141 ),  itemID = 54440,  icon = GetItemIcon( 54440 )  }, -- Dream of Skywall
+			-- Dream of Destruction DOESNT HAVE cooldown !!
+			--{ spellID = 94743,  name = GetSpellInfo( 94743 ),  itemID = 54440,  icon = GetItemIcon( 54440 )  }, -- Dream of Destruction (without CD)
+			-- PANDARIA Expansion
+			{ spellID = 125557, name = GetSpellInfo( 125557 ), itemID = 92960,  icon = GetItemIcon( 92960 )  }, -- Imperial Silk (inside Silkworm Cocoon + chance on pets; discovery new recipes)
+			{ spellID = 143011, name = GetSpellInfo( 143011 ), itemID = 98619,  icon = GetItemIcon( 98619 )  }, -- Celestial Cloth (also discovery new recipes)
+			-- WoD Expansion
 			{ spellID = 168835, name = GetSpellInfo( 168835 ), itemID = 111556, icon = GetItemIcon( 111556 ) }, -- Hexweave Cloth
-			{ spellID = 125557, name = GetSpellInfo( 125557 ), itemID = 92960,  icon = GetItemIcon( 92960 )  }, -- Imperial Silk
 			{ spellID = 176058, name = GetSpellInfo( 176058 ), itemID = 118722, icon = GetItemIcon( 118722 ) }, -- Secrets of Draenor Tailoring
 		},
 	},
@@ -201,8 +292,11 @@ NS.UpdateCharacter = function()
 				-- Add Cooldowns
 				for _,cd in ipairs( NS.db["cooldowns"][skillLine] ) do -- Pull from global cooldowns
 					if IsPlayerSpell( cd.spellID ) then -- Only known cooldowns
-						local start, duration, enabled = GetSpellCooldown( cd.spellID );
-						local cooldownRemaining = ( start > 0 and duration > 0 ) and math.ceil( ( start + duration - GetTime() ) ) or 0;
+						local start, duration = GetSpellCooldown( cd.spellID );
+						local resetRemaining = GetQuestResetTime();
+						local durationRemaining = ( ( start == 0 or duration == 0 ) and 0 ) or ( duration - ( GetTime() - start ) );
+						local cooldownRemaining = ( durationRemaining == 0 and 0 ) or ( durationRemaining < 86400 and resetRemaining ) or ( durationRemaining > 86400 and math.floor( durationRemaining / 86400 ) * 86400 + resetRemaining );
+						--print( GetSpellLink( cd.spellID ) .. " (" .. cooldownRemaining .. ") " .. SecondsToTime( cooldownRemaining ) ); -- DEBUG
 						NS.db["characters"][k]["professions"][i]["cooldowns"][cd.spellID] = cooldownRemaining;
 						if NS.db["characters"][k]["monitor"][cd.spellID] == nil then
 							NS.db["characters"][k]["monitor"][cd.spellID] = false; -- NOT monitored (false) by default, true when checked
