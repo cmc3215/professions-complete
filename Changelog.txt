@@ -1,3 +1,8 @@
+**2.4**
+* Release date: 11/18/2016
+* Bug fix, option "Open with TradeSkill" may produce Lua error in some situations. Thanks to Curse user sammael666 for reporting this issue.
+* "Open with TradeSkill" option correctly no longer opens with Cooking, First Aid, or Runeforging.
+
 **2.3**
 * Release date: 11/01/2016
 * Bug fix, AGAIN - In the overhaul for v2.0 the Ready/NotReady cooldown remaining calculation was incorrectly changed and would become inaccurate over time in some situations. You must log into your characters to update cooldown remaining times. Thanks to Curse user kajlesf for reporting this bug.

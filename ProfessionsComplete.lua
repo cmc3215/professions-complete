@@ -357,12 +357,14 @@ NS.MinimapButton( "PCMinimapButton", "Interface\\ICONS\\inv_misc_enggizmos_swiss
 	end,
 } );
 --
-NS.OpenWithTradeSkill = function( parent )
-	if not C_TradeSkillUI.IsTradeSkillLinked() and not C_TradeSkillUI.IsTradeSkillGuild() and NS.dbpc["openWithTradeSKill"] then
+NS.OpenWithTradeSkill = function()
+	if NS.dbpc["openWithTradeSKill"] and C_TradeSkillUI.GetTradeSkillLine() ~= 129 and C_TradeSkillUI.GetTradeSkillLine() ~= 185 and C_TradeSkillUI.GetTradeSkillLine() ~= 960 and not C_TradeSkillUI.IsTradeSkillLinked() and not C_TradeSkillUI.IsTradeSkillGuild() then
 		local parent = ( TradeSkillFrame and TradeSkillFrame:IsShown() and TradeSkillFrame ) or ( TSMCraftingTradeSkillFrame and TSMCraftingTradeSkillFrame:IsShown() and TSMCraftingTradeSkillFrame ) or ( SkilletFrame and SkilletFrame:IsShown() and SkilletFrame );
-		NS.UI.MainFrame:SetParent( parent ); -- Put into parent for positioning
-		NS.UI.MainFrame:Reposition();
-		NS.UI.MainFrame:ShowTab( 1 );
+		if parent then
+			NS.UI.MainFrame:SetParent( parent ); -- Put into parent for positioning
+			NS.UI.MainFrame:Reposition();
+			NS.UI.MainFrame:ShowTab( 1 );
+		end
 	end
 end
 --
@@ -472,11 +474,11 @@ NS.OnTradeSkillListUpdate = function( event )
 	if TSMCraftingTradeSkillFrame then
 		PCEventsFrame:UnregisterEvent( event );
 		TSMCraftingTradeSkillFrame:HookScript( "OnShow", NS.OpenWithTradeSkill );
-		NS.OpenWithTradeSkill( TSMCraftingTradeSkillFrame );
+		NS.OpenWithTradeSkill();
 	elseif SkilletFrame then
 		PCEventsFrame:UnregisterEvent( event );
 		SkilletFrame:HookScript( "OnShow", NS.OpenWithTradeSkill );
-		NS.OpenWithTradeSkill( SkilletFrame );
+		NS.OpenWithTradeSkill();
 	end
 end
 --
