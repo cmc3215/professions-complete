@@ -1,5 +1,0 @@
-package-as: ProfessionsComplete
-
-manual-changelog:
-	filename: Changelog.txt
-	markup-type: creole
