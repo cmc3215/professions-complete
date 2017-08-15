@@ -4,8 +4,7 @@
 local NS = select( 2, ... );
 NS.addon = ...;
 NS.title = GetAddOnMetadata( NS.addon, "Title" );
-NS.versionString = GetAddOnMetadata( NS.addon, "Version" );
-NS.version = tonumber( NS.versionString );
+NS.patch = GetBuildInfo();
 NS.UI = {};
 --------------------------------------------------------------------------------------------------------------------------------------------
 -- FRAME CREATION
@@ -258,7 +257,7 @@ NS.ScrollFrame = function( name, parent, set )
 		FauxScrollFrame_OnVerticalScroll( self, offset, self.buttonHeight, self.UpdateFunction );
 	end );
 	-- Add properties for use with vertical scroll and update function ... FauxScrollFrame_Update( frame, numItems, numToDisplay, buttonHeight, button, smallWidth, bigWidth, highlightFrame, smallHighlightWidth, bigHighlightWidth, alwaysShowScrollBar );
-	for k, v in pairs( set.udpate ) do
+	for k, v in pairs( set.update ) do
 		f[k] = v;
 	end
 	-- Create buttons
@@ -420,6 +419,7 @@ NS.MinimapButton = function( name, texture, set )
 	local f = CreateFrame( "Button", name, Minimap );
 	f:SetFrameStrata( "MEDIUM" );
 	f.dbpc = set.dbpc; -- Saved position variable per character
+	f.docked = true;
 	local h,i,o,bg;
 	local fSize,hSize,iSize,oSize,bgSize;
 	local iOffsetX,iOffsetY,bgOffsetX,bgOffsetY;
@@ -430,24 +430,44 @@ NS.MinimapButton = function( name, texture, set )
 	f:RegisterForClicks( "LeftButtonUp", "RightButtonUp" );
 	f:RegisterForDrag( "LeftButton", "RightButton" );
 	local BeingDragged = function()
-		local xpos,ypos = GetCursorPosition();
-		local xmin,ymin = Minimap:GetLeft(), Minimap:GetBottom();
-		xpos = xmin - xpos / UIParent:GetScale() + 70;
-		ypos = ypos / UIParent:GetScale() - ymin - 70;
-		local pos = math.deg( math.atan2( ypos, xpos ) );
-		if pos < 0 then pos = pos + 360; end
-		NS.dbpc[f.dbpc] = pos;
-		f:UpdatePos();
+		-- Undocked
+		if not f.docked then
+			f:StartMoving();
+		-- Docked
+		else
+			local xpos,ypos = GetCursorPosition();
+			local xmin,ymin = Minimap:GetLeft(), Minimap:GetBottom();
+			xpos = xmin - xpos / UIParent:GetScale() + 70;
+			ypos = ypos / UIParent:GetScale() - ymin - 70;
+			local pos = math.deg( math.atan2( ypos, xpos ) );
+			if pos < 0 then pos = pos + 360; end
+			NS.dbpc[f.dbpc] = pos;
+			f:UpdatePos();
+		end
 	end
 	f:SetScript( "OnDragStart", function()
 		f:SetScript( "OnUpdate", BeingDragged );
 	end );
 	f:SetScript( "OnDragStop", function()
 		f:SetScript( "OnUpdate", nil );
+		-- Undocked
+		if not f.docked then
+			f:StopMovingOrSizing();
+			local point, relativeTo, relativePoint, xOffset, yOffset = f:GetPoint( 1 );
+			NS.dbpc[f.dbpc] = ( point and point == relativePoint and xOffset and yOffset ) and { point, xOffset, yOffset } or { "CENTER", 0, 150 };
+		end
 	end );
 	function f:UpdatePos()
 		f:ClearAllPoints();
-		f:SetPoint( "TOPLEFT", "Minimap", "TOPLEFT", arc - ( radius * cos( NS.dbpc[f.dbpc] ) ), ( radius * sin( NS.dbpc[f.dbpc] ) ) - arc );
+		-- Undocked
+		if not f.docked then
+			f:SetParent( UIParent );
+			f:SetPoint( unpack( NS.dbpc[f.dbpc] ) );
+		-- Docked
+		else
+			f:SetParent( Minimap );
+			f:SetPoint( "TOPLEFT", "Minimap", "TOPLEFT", arc - ( radius * cos( NS.dbpc[f.dbpc] ) ), ( radius * sin( NS.dbpc[f.dbpc] ) ) - arc );
+		end
 	end
 	function f:UpdateSize( large )
 		h:ClearAllPoints();
@@ -519,10 +539,11 @@ end
 --------------------------------------------------------------------------------------------------------------------------------------------
 -- GENERAL
 --------------------------------------------------------------------------------------------------------------------------------------------
-NS.Explode = function( sep, str )
+NS.Explode = function( sep, str, limit )
 	local t = {};
 	for v in string.gmatch( str, "[^%" .. sep .. "]+" ) do
 		table.insert( t, v );
+		if limit and #t == limit then break end
 	end
 	return t;
 end
@@ -545,6 +566,11 @@ end
 --
 NS.Print = function( msg )
 	print( ORANGE_FONT_COLOR_CODE .. "<|r" .. NORMAL_FONT_COLOR_CODE .. NS.addon .. "|r" .. ORANGE_FONT_COLOR_CODE .. ">|r " .. msg );
+end
+--
+NS.Debug = function( msg )
+	if not NS.debug then return end
+	NS.Print( "DEBUG: " .. msg );
 end
 --
 NS.SecondsToStrTime = function( seconds, colorCode )
@@ -596,6 +622,7 @@ end
 NS.MoneyToString = function( money, colorCode )
 	local negative = money < 0;
 	money = math.abs( money );
+	colorCode = colorCode or HIGHLIGHT_FONT_COLOR_CODE;
 	--
 	local gold = money >= COPPER_PER_GOLD and NS.FormatNum( math.floor( money / COPPER_PER_GOLD ) ) or nil;
 	local silver = math.floor( ( money % COPPER_PER_GOLD ) / COPPER_PER_SILVER );
@@ -603,15 +630,18 @@ NS.MoneyToString = function( money, colorCode )
 	--
 	gold = ( gold and colorCode ) and ( colorCode .. gold .. FONT_COLOR_CODE_CLOSE ) or gold;
 	silver = ( silver > 0 and colorCode ) and ( colorCode .. silver .. FONT_COLOR_CODE_CLOSE ) or ( silver > 0 and silver ) or nil;
-	copper = colorCode .. copper .. FONT_COLOR_CODE_CLOSE;
+	copper = ( copper > 0 and colorCode ) and ( colorCode .. copper .. FONT_COLOR_CODE_CLOSE ) or ( copper > 0 and copper ) or nil;
 	--
 	local g,s,c = "|cffffd70ag|r","|cffc7c7cfs|r","|cffeda55fc|r";
-	local moneyText = copper .. c;
+	local moneyText = "";
+	if copper then
+		moneyText = copper .. c;
+	end
 	if silver then
-		moneyText = silver .. s .. " " .. moneyText;
+		moneyText = copper and ( silver .. s .. " " .. moneyText ) or ( silver .. s );
 	end
 	if gold then
-		moneyText = gold .. g .. " " .. moneyText;
+		moneyText = ( copper or silver ) and ( gold .. g .. " " .. moneyText ) or ( gold .. g );
 	end
 	if negative then
 		moneyText = colorCode and ( colorCode "-|r" .. moneyText ) or ( "-" .. moneyText );
@@ -649,6 +679,19 @@ NS.FindKeyByValue = function( t, v )
 	return nil;
 end
 --
+NS.RemoveKeysByFunction = function( t, func )
+	local k, r = 1, 0;
+	while k <= #t do
+		if func( t[k] ) then
+			table.remove( t, k );
+			r = r + 1;
+		else
+			k = k + 1;
+		end
+	end
+	return r;
+end
+--
 NS.Sort = function( t, k, order )
 	table.sort ( t,
 		function ( e1, e2 )
@@ -683,11 +726,102 @@ end
 --
 NS.GetWeeklyQuestResetTime = function()
 	local TUE,WED,THU = 2, 3, 4;
-	local resetWeekdays = { ["US"] = TUE, ["EU"] = WED, ["CN"] = THU, ["KR"] = THU, ["TW"] = THU };
+	local resetWeekdays = { ["BETA"] = TUE, ["US"] = TUE, ["EU"] = WED, ["CN"] = THU, ["KR"] = THU, ["TW"] = THU };
 	local resetWeekday = resetWeekdays[GetCVar( "portal" ):upper()];
 	local resetTime = time() + GetQuestResetTime();
 	while tonumber( date( "%w", resetTime ) ) ~= resetWeekday do
 		resetTime = resetTime + 86400;
 	end
 	return resetTime;
+end
+--
+NS.BatchDataLoop = function( set )
+	--------------------------------------------------------
+	-- Set can including the following:
+	--------------------------------------------------------
+	-- data 				(required)
+	-- batchSize
+	-- attemptsMax
+	-- EndBatchFunction
+	-- AbortFunction
+	-- DataFunction 		(required)
+	-- CompleteFunction 	(required)
+	--------------------------------------------------------
+	local dataNum,batchNum,batchRetry,AdvanceBatch,NextData;
+	--
+	AdvanceBatch = function()
+		if batchNum == batchSize or dataNum == #set.data then
+			-- Batch Complete
+			if set.EndBatchFunction then
+				set.EndBatchFunction( set.data, dataNum );
+			end
+			--
+			if batchRetry.count > 0 and ( not batchRetry.inProgress or ( batchRetry.inProgress and batchRetry.attempts < batchRetry.attemptsMax ) ) then
+				-- Retry Batch
+				batchRetry.inProgress = true;
+				batchRetry.attempts = batchRetry.attempts + 1;
+				dataNum = dataNum - batchNum; -- Reset dataNum to start of batch for retry
+				batchNum = 1;
+				return C_Timer.After( batchRetry.attempts * 0.01, NextData );
+			else
+				-- Fresh Batch
+				batchRetry.inProgress = false;
+				batchRetry.count = 0;
+				batchRetry.attempts = 0;
+				wipe( batchRetry.batchNum );
+				batchNum = 1;
+				return C_Timer.After( 0.001, NextData );
+			end
+		else
+			-- Increment Batch
+			batchNum = batchNum + 1;
+			return NextData();
+		end
+	end
+	--
+	NextData = function()
+		dataNum = dataNum + 1;
+		--
+		if set.AbortFunction and set.AbortFunction() then return end
+		if dataNum > #set.data then return set.CompleteFunction(); end -- Data complete
+		--
+		if not batchRetry.inProgress or ( batchRetry.inProgress and batchRetry.batchNum[batchNum] ) then -- Not currently retrying or retrying and match
+			local dataReturn = set.DataFunction( set.data, dataNum ); -- retry, complete or {anything-else}
+			if dataReturn == "retry" then
+				-- Add new retry
+				if not batchRetry.inProgress then
+					batchRetry.count = batchRetry.count + 1;
+					batchRetry.batchNum[batchNum] = true;
+				end
+			elseif dataReturn == "complete" then
+				-- Completed early, no more data required
+				return set.CompleteFunction();
+			elseif batchRetry.inProgress then
+				-- Remove successful retry
+				batchRetry.count = batchRetry.count - 1;
+				batchRetry.batchNum[batchNum] = nil;
+			end
+		end
+		return AdvanceBatch();
+	end
+	--
+	dataNum = 0;
+	batchNum = 1;
+	batchSize = set.batchSize or 50;
+	batchRetry = { inProgress = false, count = 0, attempts = 0, attemptsMax = set.attemptsMax or 50, batchNum = {} };
+	NextData();
+end
+--
+NS.GetAtlasInlineTexture = function( name, size1, size2 )
+	local filename, width, height, left, right, top, bottom, tilesHoriz, tilesVert = GetAtlasInfo( name );
+	size1, size2 = ( size1 or 0 ), ( size2 or 0 );
+	local width = width / ( right - left ); -- Width of actual texture (e.g. width = 64, texture = 256)
+	local height = height / ( bottom - top ); -- Height ^
+	local left = width * left;
+	local right = width * right;
+	local top = height * top;
+	local bottom = height * bottom;
+	-- https://wow.gamepedia.com/UI_escape_sequences#Textures
+	-- |TTexturePath:size1:size2:xoffset:yoffset:dimx:dimy:coordx1:coordx2:coordy1:coordy2:red:green:blue|t
+	return string.format( "|T%s:%d:%d:0:0:%d:%d:%d:%d:%d:%d|t", filename, size1, size2, width, height, left, right, top, bottom );
 end

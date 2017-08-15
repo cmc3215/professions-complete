@@ -1,3 +1,9 @@
+**2.6**
+
+- Release date: 08/14/2017
+- Right-Click a cooldown button to "Create All".
+- Minor updates to Help tab.
+
 **2.5**
 
 - Release date: 03/30/2017

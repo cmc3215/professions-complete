@@ -3,6 +3,8 @@
 --------------------------------------------------------------------------------------------------------------------------------------------
 local NS = select( 2, ... );
 local L = NS.localization;
+NS.versionString = "2.6";
+NS.version = tonumber( NS.versionString );
 --
 NS.initialized = false;
 NS.updateRequestTime = nil;
@@ -422,7 +424,7 @@ SlashCmdList["PROFESSIONSCOMPLETE"] = function( msg ) NS.SlashCmdHandler( msg ) 
 --------------------------------------------------------------------------------------------------------------------------------------------
 -- Event/Hook Handlers
 --------------------------------------------------------------------------------------------------------------------------------------------
-NS.OnAddonLoaded = function( event ) -- ADDON_LOADED
+NS.OnAddonLoaded = function( event )
 	if not NS.db and IsAddOnLoaded( NS.addon ) then
 		-- SavedVariables
 		if not PROFESSIONSCOMPLETE_SAVEDVARIABLES then
@@ -449,7 +451,7 @@ NS.OnAddonLoaded = function( event ) -- ADDON_LOADED
 	end
 end
 --
-NS.OnPlayerLogin = function( event ) -- PLAYER_LOGIN
+NS.OnPlayerLogin = function( event )
 	PCEventsFrame:UnregisterEvent( event );
 	C_Timer.After( 2, function()
 		-- Call initial character update directly to avoid delay which would run intialize prematurely
@@ -482,7 +484,7 @@ NS.OnTradeSkillListUpdate = function( event )
 	end
 end
 --
-NS.OnChatMsgTradeskills = function( event, ... ) -- CHAT_MSG_TRADESKILLS
+NS.OnChatMsgTradeskills = function( event, ... )
 	local arg1 = select( 1, ... );
 	if not arg1 then return end
 	-- If not English update on every message, otherwise only when player craft detected
