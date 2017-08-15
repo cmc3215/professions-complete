@@ -58,12 +58,13 @@ NS.UI.cfg = {
 					size = { 266, 19 },
 					setPoint = { "TOPLEFT", "#sibling", "TOPRIGHT", -2, 0 },
 				} );
-				local function CooldownButton_OnClick( CooldownButton, skillLine, spellName, spellID )
+				local function CooldownButton_OnClick( CooldownButton, buttonClicked, skillLine, spellName, spellID )
 					if ( ( not TradeSkillFrame or not TradeSkillFrame:IsShown() ) and ( not TSMCraftingTradeSkillFrame or not TSMCraftingTradeSkillFrame:IsShown() ) and ( not SkilletFrame or not SkilletFrame:IsShown() ) ) or C_TradeSkillUI.IsTradeSkillLinked() or C_TradeSkillUI.IsTradeSkillGuild() or skillLine ~= C_TradeSkillUI.GetTradeSkillLine() then
 						CastSpellByName( NS.professionInfo[skillLine].name ); -- Open required TradeSkillFrame. Not having the profession causes no effect
 						CooldownButton:GetScript( "OnEnter" )( CooldownButton ); -- Updates tooltip
 					elseif C_TradeSkillUI.IsTradeSkillReady() then
-						if not C_TradeSkillUI.GetRecipeInfo( spellID ) or not C_TradeSkillUI.GetRecipeInfo( spellID ).learned then
+						local recipeInfo = C_TradeSkillUI.GetRecipeInfo( spellID );
+						if not recipeInfo or not recipeInfo.learned then
 							NS.Print( RED_FONT_COLOR_CODE .. string.format( L["%s spell %s (%d) not found"], NS.professionInfo[skillLine].name, spellName, spellID ) .. FONT_COLOR_CODE_CLOSE );
 						else
 							if TradeSkillFrame and TradeSkillFrame:IsShown() then -- Select recipe if using TradeSkillFrame
@@ -89,7 +90,13 @@ NS.UI.cfg = {
 									TradeSkillFrame.RecipeList:SetSelectedRecipeID( spellID );
 								end
 							end
-							C_TradeSkillUI.CraftRecipe( spellID, 1 ); -- Create
+							if buttonClicked == "LeftButton" then
+								-- "LeftButton"
+								C_TradeSkillUI.CraftRecipe( spellID, 1 ); -- Create
+							else
+								-- "RightButton"
+								C_TradeSkillUI.CraftRecipe( spellID, recipeInfo.numAvailable ); -- Create All
+							end
 						end
 					end
 				end
@@ -97,7 +104,7 @@ NS.UI.cfg = {
 					size = { 422, ( 30 * 12 - 5 ) },
 					setPoint = { "TOPLEFT", "$parentNameColumnHeaderButton", "BOTTOMLEFT", 1, -3 },
 					buttonTemplate = "PCMonitorTabScrollFrameButtonTemplate",
-					udpate = {
+					update = {
 						numToDisplay = 12, -- Default, will be reset on update
 						buttonHeight = 30, -- Default, will be reset on update
 						alwaysShowScrollBar = true,
@@ -208,7 +215,8 @@ NS.UI.cfg = {
 													-- Button
 													_G[bn .. "Cooldowns" .. cdNum]:SetNormalTexture( cd.icon );
 													if items[k]["name"] == NS.currentCharacter.name then
-														_G[bn .. "Cooldowns" .. cdNum]:SetScript( "OnClick", function( self ) CooldownButton_OnClick( self, items[k]["professions"][i]["skillLine"], cd.name, cd.spellID ); end );
+														_G[bn .. "Cooldowns" .. cdNum]:RegisterForClicks( "LeftButtonUp", "RightButtonUp" );
+														_G[bn .. "Cooldowns" .. cdNum]:SetScript( "OnClick", function( self, buttonClicked ) CooldownButton_OnClick( self, buttonClicked, items[k]["professions"][i]["skillLine"], cd.name, cd.spellID ); end );
 													else
 														_G[bn .. "Cooldowns" .. cdNum]:SetScript( "OnClick", nil );
 													end
@@ -327,7 +335,7 @@ NS.UI.cfg = {
 					size = { 422, ( 30 * 12 - 5 ) },
 					setPoint = { "TOPLEFT", "$parent", "TOPLEFT", -1, -37 },
 					buttonTemplate = "PCCharactersTabScrollFrameButtonTemplate",
-					udpate = {
+					update = {
 						numToDisplay = 12,
 						buttonHeight = 30,
 						alwaysShowScrollBar = true,
@@ -502,7 +510,7 @@ NS.UI.cfg = {
 					size = { 422, ( 30 * 12 - 5 ) },
 					setPoint = { "TOPLEFT", "$parent", "TOPLEFT", -1, -37 },
 					buttonTemplate = "PCProfessionsTabScrollFrameButtonTemplate",
-					udpate = {
+					update = {
 						numToDisplay = 12,
 						buttonHeight = 30,
 						alwaysShowScrollBar = true,
@@ -852,9 +860,8 @@ NS.UI.cfg = {
 					fontObject = "GameFontNormalLarge",
 				} );
 				NS.TextFrame( "NeedMoreHelp", SubFrame, string.format(
-						L["%sQuestions, comments, and suggestions can be made on Curse.\nPlease submit bug reports on CurseForge.|r\n\n" ..
-						"http://www.curse.com/addons/wow/professions-complete\n" ..
-						"http://wow.curseforge.com/addons/professions-complete/tickets/"],
+						L["%sQuestions, Comments, Bugs, and Suggestions|r\n\n" ..
+						"https://mods.curse.com/addons/wow/professions-complete"],
 						NORMAL_FONT_COLOR_CODE
 					), {
 					setPoint = {
