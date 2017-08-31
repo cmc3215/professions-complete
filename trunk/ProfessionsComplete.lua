@@ -3,7 +3,7 @@
 --------------------------------------------------------------------------------------------------------------------------------------------
 local NS = select( 2, ... );
 local L = NS.localization;
-NS.versionString = "2.6";
+NS.versionString = "2.7";
 NS.version = tonumber( NS.versionString );
 --
 NS.initialized = false;
