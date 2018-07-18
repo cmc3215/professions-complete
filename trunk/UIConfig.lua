@@ -59,9 +59,13 @@ NS.UI.cfg = {
 					setPoint = { "TOPLEFT", "#sibling", "TOPRIGHT", -2, 0 },
 				} );
 				local function CooldownButton_OnClick( CooldownButton, buttonClicked, skillLine, spellName, spellID )
-					if ( ( not TradeSkillFrame or not TradeSkillFrame:IsShown() ) and ( not TSMCraftingTradeSkillFrame or not TSMCraftingTradeSkillFrame:IsShown() ) and ( not SkilletFrame or not SkilletFrame:IsShown() ) ) or C_TradeSkillUI.IsTradeSkillLinked() or C_TradeSkillUI.IsTradeSkillGuild() or skillLine ~= C_TradeSkillUI.GetTradeSkillLine() then
+					if ( ( not TradeSkillFrame or not TradeSkillFrame:IsShown() ) and ( not TSMCraftingTradeSkillFrame or not TSMCraftingTradeSkillFrame:IsShown() ) and ( not SkilletFrame or not SkilletFrame:IsShown() ) ) or C_TradeSkillUI.IsTradeSkillLinked() or C_TradeSkillUI.IsTradeSkillGuild() or skillLine ~= select( 6, C_TradeSkillUI.GetTradeSkillLine() ) then
 						CastSpellByName( NS.professionInfo[skillLine].name ); -- Open required TradeSkillFrame. Not having the profession causes no effect
-						CooldownButton:GetScript( "OnEnter" )( CooldownButton ); -- Updates tooltip
+						C_Timer.After( 0.01, function()
+							if GetMouseFocus() == CooldownButton then
+								CooldownButton:GetScript( "OnEnter" )( CooldownButton ); -- Updates tooltip - I had to delay this in patch 8.0.1 because a newly opened TradeSkill wasn't being reflected fast enough.
+							end
+						end );
 					elseif C_TradeSkillUI.IsTradeSkillReady() then
 						local recipeInfo = C_TradeSkillUI.GetRecipeInfo( spellID );
 						if not recipeInfo or not recipeInfo.learned then
@@ -176,7 +180,7 @@ NS.UI.cfg = {
 										GameTooltip:SetText( text );
 										if skillLine then
 											local line = "";
-											if ( ( not TradeSkillFrame or not TradeSkillFrame:IsShown() ) and ( not TSMCraftingTradeSkillFrame or not TSMCraftingTradeSkillFrame:IsShown() ) and ( not SkilletFrame or not SkilletFrame:IsShown() ) ) or C_TradeSkillUI.IsTradeSkillLinked() or C_TradeSkillUI.IsTradeSkillGuild() or skillLine ~= C_TradeSkillUI.GetTradeSkillLine() then
+											if ( ( not TradeSkillFrame or not TradeSkillFrame:IsShown() ) and ( not TSMCraftingTradeSkillFrame or not TSMCraftingTradeSkillFrame:IsShown() ) and ( not SkilletFrame or not SkilletFrame:IsShown() ) ) or C_TradeSkillUI.IsTradeSkillLinked() or C_TradeSkillUI.IsTradeSkillGuild() or skillLine ~= select( 6, C_TradeSkillUI.GetTradeSkillLine() ) then
 												line = string.format( L["Click to open %s"], NS.professionInfo[skillLine].name );
 											else
 												line = L["Click to Create"];
@@ -771,9 +775,14 @@ NS.UI.cfg = {
 					size = { 100, 16 },
 					setPoint = { "TOPLEFT", "$parent", "TOPLEFT", 8, -8 },
 				} );
-				NS.CheckButton( "ShowMinimapButtonCheckButton", SubFrame, L["Show Minimap Button"], {
+				NS.CheckButton( "OpenWithTradeSKillCheckButton", SubFrame, L["Open With TradeSkill"], {
 					setPoint = { "TOPLEFT", "#sibling", "BOTTOMLEFT", 3, -1 },
-					tooltip = L["Show or hide the\nbutton on the Minimap\n\n(Character Specific)"],
+					tooltip = L["Open and close frame with:\nTradeSkillFrame (Default)\nTSMCraftingTradeSkillFrame\nSkilletFrame\n\nIgnored if Linked or Guild\n\n(Character Specific)"],
+					dbpc = "openWithTradeSKill",
+				} );
+				NS.CheckButton( "ShowMinimapButtonCheckButton", SubFrame, L["Show Minimap Button"], {
+					setPoint = { "TOPLEFT", "#sibling", "BOTTOMLEFT", 0, -1 },
+					tooltip = L["Show or hide the\nbutton on the Minimap"],
 					OnClick = function( checked )
 						if not checked then
 							PCMinimapButton:Hide();
@@ -781,12 +790,7 @@ NS.UI.cfg = {
 							PCMinimapButton:Show();
 						end
 					end,
-					dbpc = "showMinimapButton",
-				} );
-				NS.CheckButton( "OpenWithTradeSKillCheckButton", SubFrame, L["Open With TradeSkill"], {
-					setPoint = { "TOPLEFT", "#sibling", "BOTTOMLEFT", 0, -1 },
-					tooltip = L["Open and close frame with:\nTradeSkillFrame (Default)\nTSMCraftingTradeSkillFrame\nSkilletFrame\n\nIgnored if Linked or Guild\n\n(Character Specific)"],
-					dbpc = "openWithTradeSKill",
+					db = "showMinimapButton",
 				} );
 				NS.CheckButton( "ShowCharacterRealmsCheckButton", SubFrame, L["Show Character Realms"], {
 					setPoint = { "TOPLEFT", "#sibling", "BOTTOMLEFT", 0, -1 },
@@ -801,8 +805,8 @@ NS.UI.cfg = {
 			end,
 			Refresh			= function( SubFrame )
 				local sfn = SubFrame:GetName();
-				_G[sfn .. "ShowMinimapButtonCheckButton"]:SetChecked( NS.dbpc["showMinimapButton"] );
 				_G[sfn .. "OpenWithTradeSKillCheckButton"]:SetChecked( NS.dbpc["openWithTradeSKill"] );
+				_G[sfn .. "ShowMinimapButtonCheckButton"]:SetChecked( NS.db["showMinimapButton"] );
 				_G[sfn .. "ShowCharacterRealmsCheckButton"]:SetChecked( NS.db["showCharacterRealms"] );
 				_G[sfn .. "ShowDeleteCooldownConfirmDialogCheckButton"]:SetChecked( NS.db["showDeleteCooldownConfirmDialog"] );
 			end,
@@ -812,7 +816,7 @@ NS.UI.cfg = {
 			mainFrameTitle	= NS.title,
 			tabText			= HELP_LABEL,
 			Init			= function( SubFrame )
-				NS.TextFrame( "Description", SubFrame, string.format( L["%s version %s"], NS.title, NS.versionString ), {
+				NS.TextFrame( "Description", SubFrame, string.format( L["%s version %s for patch %s"], NS.title, NS.versionString, NS.releasePatch ), {
 					setPoint = {
 						{ "TOPLEFT", "$parent", "TOPLEFT", 8, -8 },
 						{ "RIGHT", -8 },
@@ -861,7 +865,7 @@ NS.UI.cfg = {
 				} );
 				NS.TextFrame( "NeedMoreHelp", SubFrame, string.format(
 						L["%sQuestions, Comments, Bugs, and Suggestions|r\n\n" ..
-						"https://mods.curse.com/addons/wow/professions-complete"],
+						"https://www.curseforge.com/wow/addons/professions-complete"],
 						NORMAL_FONT_COLOR_CODE
 					), {
 					setPoint = {
