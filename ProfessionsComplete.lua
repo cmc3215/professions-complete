@@ -3,7 +3,8 @@
 --------------------------------------------------------------------------------------------------------------------------------------------
 local NS = select( 2, ... );
 local L = NS.localization;
-NS.versionString = "2.7";
+NS.releasePatch = "8.0.1";
+NS.versionString = "2.8";
 NS.version = tonumber( NS.versionString );
 --
 NS.initialized = false;
@@ -24,11 +25,11 @@ NS.professionInfo = {
 	[171] = { name = GetSpellInfo( 2259 ),
 		cooldowns = {
 			-- Alchemy Transmutes that SHARE 1 day CD (reset daily @ DAILY RESET TIME) with others transmutes in all expansions are marked on comments with -> (**shared 1 day CD with others**)
-			-- CLASSIC (VANILLA EXPANSION)
-			-- 2 Bars transmute
+			-- CLASSIC
+			-- bar transmutes
 			{ spellID = 11479,  name = GetSpellInfo( 11479 ),  itemID = 3577,  icon = GetItemIcon( 3577 )    }, -- Transmute: Iron to Gold (**shared 1 day CD with others**)
 			{ spellID = 11480,  name = GetSpellInfo( 11480 ),  itemID = 6037,  icon = GetItemIcon( 6037 )    }, -- Transmute: Mithril to Truesilver (**shared 1 day CD with others**)
-			-- 8 classic essence transmute
+			-- essence transmutes
 			{ spellID = 17559,  name = GetSpellInfo( 17559 ),  itemID = 7078,  icon = GetItemIcon( 7078 )    }, -- Transmute: Air to Fire (**shared 1 day CD with others**)
 			{ spellID = 17560,  name = GetSpellInfo( 17560 ),  itemID = 7076,  icon = GetItemIcon( 7076 )    }, -- Transmute: Fire to Earth (**shared 1 day CD with others**)
 			{ spellID = 17561,  name = GetSpellInfo( 17561 ),  itemID = 7080,  icon = GetItemIcon( 7080 )    }, -- Transmute: Earth to Water (**shared 1 day CD with others**)
@@ -37,8 +38,8 @@ NS.professionInfo = {
 			{ spellID = 17564,  name = GetSpellInfo( 17564 ),  itemID = 12808, icon = GetItemIcon( 12808 )   }, -- Transmute: Water to Undeath (**shared 1 day CD with others**)
 			{ spellID = 17565,  name = GetSpellInfo( 17565 ),  itemID = 7076,  icon = GetItemIcon( 7076 )    }, -- Transmute: Life to Earth (**shared 1 day CD with others**)
 			{ spellID = 17566,  name = GetSpellInfo( 17566 ),  itemID = 12803, icon = GetItemIcon( 12803 )   }, -- Transmute: Earth to Life (**shared 1 day CD with others**)
-			-- BC Expansion
-			-- 10 Primals transmute
+			-- THE BURNING CRUSADE Expansion
+			-- primal transmutes
 			{ spellID = 28566,  name = GetSpellInfo( 28566 ),  itemID = 21884,  icon = GetItemIcon( 21884 )  }, -- Transmute: Primal Air to Fire (**shared 1 day CD with others**)
 			{ spellID = 28567,  name = GetSpellInfo( 28567 ),  itemID = 21885,  icon = GetItemIcon( 21885 )  }, -- Transmute: Primal Earth to Water (**shared 1 day CD with others**)
 			{ spellID = 28568,  name = GetSpellInfo( 28568 ),  itemID = 22452,  icon = GetItemIcon( 22452 )  }, -- Transmute: Primal Fire to Earth (**shared 1 day CD with others**)
@@ -49,9 +50,9 @@ NS.professionInfo = {
 			{ spellID = 28583,  name = GetSpellInfo( 28583 ),  itemID = 22457,  icon = GetItemIcon( 22457 )  }, -- Transmute: Primal Fire to Mana (**shared 1 day CD with others**)
 			{ spellID = 28584,  name = GetSpellInfo( 28584 ),  itemID = 22452,  icon = GetItemIcon( 22452 )  }, -- Transmute: Primal Life to Earth (**shared 1 day CD with others**)
 			{ spellID = 28585,  name = GetSpellInfo( 28585 ),  itemID = 21886,  icon = GetItemIcon( 21886 )  }, -- Transmute: Primal Earth to Life (**shared 1 day CD with others**)
-			-- LK Expansion
+			-- WRATH OF THE LICH KING
 			{ spellID = 60893,  name = GetSpellInfo( 60893 ),  itemID = 115460, icon = GetItemIcon( 115460 ) }, -- Northrend Alchemy Research (3 days CD recipe research)
-			-- LK Eternals transmute
+			-- eternal transmutes
 			{ spellID = 53771,  name = GetSpellInfo( 53771 ),  itemID = 35627,  icon = GetItemIcon( 35627 )  }, -- Transmute: Eternal Life to Shadow (**shared 1 day CD with others**)
 			{ spellID = 53773,  name = GetSpellInfo( 53773 ),  itemID = 36860,  icon = GetItemIcon( 36860 )  }, -- Transmute: Eternal Life to Fire (**shared 1 day CD with others**)
 			{ spellID = 53774,  name = GetSpellInfo( 53774 ),  itemID = 35622,  icon = GetItemIcon( 35622 )  }, -- Transmute: Eternal Fire to Water (**shared 1 day CD with others**)
@@ -64,24 +65,23 @@ NS.professionInfo = {
 			{ spellID = 53782,  name = GetSpellInfo( 53782 ),  itemID = 35627,  icon = GetItemIcon( 35627 )  }, -- Transmute: Eternal Earth to Shadow (**shared 1 day CD with others**)
 			{ spellID = 53783,  name = GetSpellInfo( 53783 ),  itemID = 35623,  icon = GetItemIcon( 35623 )  }, -- Transmute: Eternal Water to Air (**shared 1 day CD with others**)
 			{ spellID = 53784,  name = GetSpellInfo( 53784 ),  itemID = 36860,  icon = GetItemIcon( 36860 )  }, -- Transmute: Eternal Water to Fire (**shared 1 day CD with others**)
-			-- 6 Alchemy LK gems transmute
+			-- gem transmutes
 			{ spellID = 66658,  name = GetSpellInfo( 66658 ),  itemID = 36931,  icon = GetItemIcon( 36931 )  }, -- Transmute: Ametrine (**shared 1 day CD with others**)
 			{ spellID = 66659,  name = GetSpellInfo( 66659 ),  itemID = 36919,  icon = GetItemIcon( 36919 )  }, -- Transmute: Cardinal Ruby (**shared 1 day CD with others**)
 			{ spellID = 66660,  name = GetSpellInfo( 66660 ),  itemID = 36922,  icon = GetItemIcon( 36922 )  }, -- Transmute: King's Amber (**shared 1 day CD with others**)
 			{ spellID = 66662,  name = GetSpellInfo( 66662 ),  itemID = 36928,  icon = GetItemIcon( 36928 )  }, -- Transmute: Dreadstone (**shared 1 day CD with others**)
 			{ spellID = 66663,  name = GetSpellInfo( 66663 ),  itemID = 36925,  icon = GetItemIcon( 36925 )  }, -- Transmute: Majestic Zircon (**shared 1 day CD with others**)
 			{ spellID = 66664,  name = GetSpellInfo( 66664 ),  itemID = 36934,  icon = GetItemIcon( 36934 )  }, -- Transmute: Eye of Zul (**shared 1 day CD with others**)
-			-- CATA Expansion
+			-- CATACLYSM
 			{ spellID = 78866,  name = GetSpellInfo( 78866 ),  itemID = 54464,  icon = GetItemIcon( 54464 )  }, -- Transmute: Living Elements (**shared 1 day CD with others**)
 			{ spellID = 80244,  name = GetSpellInfo( 80244 ),  itemID = 51950,  icon = GetItemIcon( 51950 )  }, -- Transmute: Pyrium Bar (**shared 1 day CD with others**)
-			-- PANDARIA Expansion
+			-- MISTS OF PANDARIA
 			{ spellID = 114780, name = GetSpellInfo( 114780 ), itemID = 72104,  icon = GetItemIcon( 72104 )  }, -- Transmute: Living Steel (**shared 1 day CD with others**)
-			-- WoD Expansion
+			-- WARLORDS OF DRAENOR
 			{ spellID = 156587, name = GetSpellInfo( 156587 ), itemID = 108996, icon = GetItemIcon( 108996 ) }, -- Alchemical Catalyst
 			{ spellID = 175880, name = GetSpellInfo( 175880 ), itemID = 118700, icon = GetItemIcon( 118700 ) }, -- Secrets of Draenor Alchemy
 			{ spellID = 181643, name = GetSpellInfo( 181643 ), itemID = 118472, icon = GetItemIcon( 118472 ) }, -- Transmute: Savage Blood (**shared 1 day CD with others**)
-			-- LEGION EXPANSION
-			-- All 10 Legion transmutation spells are discoveries and share 1 day CD
+			-- LEGION
 			{ spellID = 213257, name = GetSpellInfo( 213257 ), itemID = 124124, icon = GetItemIcon( 124124 ) }, -- Transmute: Blood of Sargeras
 			{ spellID = 213252, name = GetSpellInfo( 213252 ), itemID = 137593, icon = GetItemIcon( 137593 ) }, -- Transmute: Cloth to Herbs
 			{ spellID = 213249, name = GetSpellInfo( 213249 ), itemID = 137591, icon = GetItemIcon( 137591 ) }, -- Transmute: Cloth to Skins
@@ -91,15 +91,23 @@ NS.professionInfo = {
 			{ spellID = 213250, name = GetSpellInfo( 213250 ), itemID = 137592, icon = GetItemIcon( 137592 ) }, -- Transmute: Skins to Ore
 			{ spellID = 213254, name = GetSpellInfo( 213254 ), itemID = 137594, icon = GetItemIcon( 137594 ) }, -- Transmute: Fish to Gems
 			{ spellID = 213255, name = GetSpellInfo( 213255 ), itemID = 137600, icon = GetItemIcon( 137600 ) }, -- Transmute: Meat to Pants
-			-- Transmute: Meat to Pet is special, this have 1 day CD and share with others Legion Transmute, but item that is
-			-- produce (Pulsating Sac) is Binds when picked up (BoP) and Unique with 7 day (real time) duration time,
-			-- that basically means 7 day CD for this transmute or until you have Pulsating Sac in your bags (u can delete it)!!
 			{ spellID = 213256, name = GetSpellInfo( 213256 ), itemID = 137599, icon = GetItemIcon( 137599 ) }, -- Transmute: Meat to Pet
-			-- Wild Transmutation have 3 ranks (all other Legion transmutation have only 1 rank) these DONT share daily CD with 10 others Legion transmute
-			-- Rank 1 is learned by recipe (sold by vendor), next two ranks are learned by discovery performing previous rank
+			--
+			{ spellID = 247701, name = GetSpellInfo( 247701 ), itemID = 151568, icon = GetItemIcon( 151568 ) }, -- Transmute: Primal Sargerite
+			--
 			{ spellID = 188800, name = GetSpellInfo( 188800 ), itemID = 141323, icon = GetItemIcon( 141323 ) }, -- Wild Transmutation Rank 1
 			{ spellID = 188801, name = GetSpellInfo( 188801 ), itemID = 141323, icon = GetItemIcon( 141323 ) }, -- Wild Transmutation Rank 2
 			{ spellID = 188802, name = GetSpellInfo( 188802 ), itemID = 141323, icon = GetItemIcon( 141323 ) }, -- Wild Transmutation Rank 3
+			-- BATTLE FOR AZEROTH
+			{ spellID = 251832, name = GetSpellInfo( 251832 ), itemID = 152668, icon = GetItemIcon( 152668 ) }, -- Transmute: Expulsom
+			{ spellID = 251822, name = GetSpellInfo( 251822 ), itemID = 152581, icon = GetItemIcon( 152581 ) }, -- Transmute: Fish to Gems
+			{ spellID = 251808, name = GetSpellInfo( 251808 ), itemID = 160325, icon = GetItemIcon( 160325 ) }, -- Transmute: Meat to Pet
+			{ spellID = 251314, name = GetSpellInfo( 251314 ), itemID = 152582, icon = GetItemIcon( 152582 ) }, -- Transmute: Cloth to Skins
+			{ spellID = 251311, name = GetSpellInfo( 251311 ), itemID = 152581, icon = GetItemIcon( 152581 ) }, -- Transmute: Ore to Gems
+			{ spellID = 251310, name = GetSpellInfo( 251310 ), itemID = 152580, icon = GetItemIcon( 152580 ) }, -- Transmute: Ore to Cloth
+			{ spellID = 251309, name = GetSpellInfo( 251309 ), itemID = 152578, icon = GetItemIcon( 152578 ) }, -- Transmute: Ore to Herbs
+			{ spellID = 251306, name = GetSpellInfo( 251306 ), itemID = 152580, icon = GetItemIcon( 152580 ) }, -- Transmute: Herbs to Cloth
+			{ spellID = 251305, name = GetSpellInfo( 251305 ), itemID = 160322, icon = GetItemIcon( 160322 ) }, -- Transmute: Herbs to Ore
 		},
 	},
 	-- Blacksmithing
@@ -223,6 +231,8 @@ NS.DefaultSavedVariables = function()
 			end
 			return t;
 		end )(),
+		["showMinimapButton"] = true,
+		["minimapButtonPosition"] = 60,
 		["showCharacterRealms"] = true,
 		["showDeleteCooldownConfirmDialog"] = true,
 	};
@@ -231,8 +241,6 @@ end
 NS.DefaultSavedVariablesPerCharacter = function()
 	return {
 		["version"] = NS.version,
-		["showMinimapButton"] = true,
-		["minimapButtonPosition"] = 60,
 		["openWithTradeSKill"] = true,
 	};
 end
@@ -246,6 +254,11 @@ NS.Upgrade = function()
 		NS.db["cooldowns"] = vars["cooldowns"];
 		NS.db["showDeleteCooldownConfirmDialog"] = vars["showDeleteCooldownConfirmDialog"];
 	end
+	-- 2.8
+	if version < 2.8 then
+		NS.db["showMinimapButton"] = NS.dbpc["showMinimapButton"];
+		NS.db["minimapButtonPosition"] = NS.dbpc["minimapButtonPosition"];
+	end
 	--
 	NS.db["version"] = NS.version;
 end
@@ -253,10 +266,11 @@ end
 NS.UpgradePerCharacter = function()
 	local varspercharacter = NS.DefaultSavedVariablesPerCharacter();
 	local version = NS.dbpc["version"];
-	-- 2.x
-	--if version < 2.x then
-		-- No upgrades
-	--end
+	-- 2.8
+	if version < 2.8 then
+		NS.dbpc["showMinimapButton"] = nil;
+		NS.dbpc["minimapButtonPosition"] = nil;
+	end
 	--
 	NS.dbpc["version"] = NS.version;
 end
@@ -347,7 +361,8 @@ end
 -- Misc
 --------------------------------------------------------------------------------------------------------------------------------------------
 NS.MinimapButton( "PCMinimapButton", "Interface\\ICONS\\inv_misc_enggizmos_swissarmy", {
-	dbpc = "minimapButtonPosition",
+	db = "minimapButtonPosition",
+	square = true,
 	tooltip = function()
 		GameTooltip:SetText( HIGHLIGHT_FONT_COLOR_CODE .. NS.title .. FONT_COLOR_CODE_CLOSE );
 		GameTooltip:AddLine( L["Left-Click to open and close"] );
@@ -467,7 +482,7 @@ NS.OnPlayerLogin = function( event )
 	end );
 	-- Minimap Button
 	PCMinimapButton:UpdatePos(); -- Resets to last drag position
-	if not NS.dbpc["showMinimapButton"] then
+	if not NS.db["showMinimapButton"] then
 		PCMinimapButton:Hide(); -- Hide if unchecked in options
 	end
 end

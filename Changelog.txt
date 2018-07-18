@@ -1,3 +1,14 @@
+**2.8**
+
+- Release date: 07/18/2018
+- TOC updated for patch 8.0.1.
+- Minor updates for compatibility with system changes made in Battle for Azeroth pre-patch: A change to the GetTradeSkillLine() method was causing the profession frame to close unexpectedly.
+- Added patch 7.3 Alchemy spell Transmute: Primal Sargerite to addon's defaults.
+- Added new Battle for Azeroth Alchemy transmute spells to addon's defaults.
+- Minimap show/hide and position are now account-wide rather than character-specific.
+- The Help tab now lists the patch that the addon is created for next to the addon version.
+- Updated the addon's Curse URL on the Help tab.
+
 **2.7**
 
 - Release date: 08/31/2017
