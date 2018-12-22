@@ -3,8 +3,8 @@
 --------------------------------------------------------------------------------------------------------------------------------------------
 local NS = select( 2, ... );
 local L = NS.localization;
-NS.releasePatch = "8.0.1";
-NS.versionString = "2.8";
+NS.releasePatch = "8.1";
+NS.versionString = "2.9";
 NS.version = tonumber( NS.versionString );
 --
 NS.initialized = false;
@@ -231,8 +231,7 @@ NS.DefaultSavedVariables = function()
 			end
 			return t;
 		end )(),
-		["showMinimapButton"] = true,
-		["minimapButtonPosition"] = 60,
+		["ldbi"] = { hide = false, minimapPos = 60 },
 		["showCharacterRealms"] = true,
 		["showDeleteCooldownConfirmDialog"] = true,
 	};
@@ -258,6 +257,13 @@ NS.Upgrade = function()
 	if version < 2.8 then
 		NS.db["showMinimapButton"] = NS.dbpc["showMinimapButton"];
 		NS.db["minimapButtonPosition"] = NS.dbpc["minimapButtonPosition"];
+	end
+	-- 2.9
+	if version < 2.9 then
+		NS.db["ldbi"] = vars["ldbi"];
+		NS.db["ldbi"] = { hide = ( not NS.db["showMinimapButton"] ), minimapPos = NS.db["minimapButtonPosition"] };
+		NS.db["showMinimapButton"] = nil;
+		NS.db["minimapButtonPosition"] = nil;
 	end
 	--
 	NS.db["version"] = NS.version;
@@ -360,20 +366,6 @@ end
 --------------------------------------------------------------------------------------------------------------------------------------------
 -- Misc
 --------------------------------------------------------------------------------------------------------------------------------------------
-NS.MinimapButton( "PCMinimapButton", "Interface\\ICONS\\inv_misc_enggizmos_swissarmy", {
-	db = "minimapButtonPosition",
-	square = true,
-	tooltip = function()
-		GameTooltip:SetText( HIGHLIGHT_FONT_COLOR_CODE .. NS.title .. FONT_COLOR_CODE_CLOSE );
-		GameTooltip:AddLine( L["Left-Click to open and close"] );
-		GameTooltip:AddLine( L["Drag to move this button"] );
-		GameTooltip:Show();
-	end,
-	OnLeftClick = function( self )
-		NS.SlashCmdHandler();
-	end,
-} );
---
 NS.OpenWithTradeSkill = function()
 	if NS.dbpc["openWithTradeSKill"] and C_TradeSkillUI.GetTradeSkillLine() ~= 129 and C_TradeSkillUI.GetTradeSkillLine() ~= 185 and C_TradeSkillUI.GetTradeSkillLine() ~= 960 and not C_TradeSkillUI.IsTradeSkillLinked() and not C_TradeSkillUI.IsTradeSkillGuild() then
 		local parent = ( TradeSkillFrame and TradeSkillFrame:IsShown() and TradeSkillFrame ) or ( TSMCraftingTradeSkillFrame and TSMCraftingTradeSkillFrame:IsShown() and TSMCraftingTradeSkillFrame ) or ( SkilletFrame and SkilletFrame:IsShown() and SkilletFrame );
@@ -411,6 +403,25 @@ NS.AddCooldown = function( spellID, itemID, skillLine )
 		end
 	end
 end
+--------------------------------------------------------------------------------------------------------------------------------------------
+-- LDB Data Object
+--------------------------------------------------------------------------------------------------------------------------------------------
+NS.ldb = LibStub:GetLibrary( "LibDataBroker-1.1" ):NewDataObject( NS.addon, {
+	type = "data source",
+	text = NS.addon,
+	icon = 237296, -- inv_misc_enggizmos_swissarmy
+	OnClick = function( self, button )
+		NS.SlashCmdHandler();
+	end,
+	OnTooltipShow = function( self )
+		-- Not initialized
+		if not NS.initialized then return end
+		-- Show tooltip for known Minimap button
+		self:SetText( HIGHLIGHT_FONT_COLOR_CODE .. NS.title .. FONT_COLOR_CODE_CLOSE );
+		self:AddLine( L["Left-Click to open and close"] );
+		self:AddLine( L["Drag to move this button"] );
+	end,
+} );
 --------------------------------------------------------------------------------------------------------------------------------------------
 -- Slash Commands
 --------------------------------------------------------------------------------------------------------------------------------------------
@@ -480,11 +491,9 @@ NS.OnPlayerLogin = function( event )
 		--
 		NS.initialized = true; -- Slash command handler won't open GUI until intialized
 	end );
-	-- Minimap Button
-	PCMinimapButton:UpdatePos(); -- Resets to last drag position
-	if not NS.db["showMinimapButton"] then
-		PCMinimapButton:Hide(); -- Hide if unchecked in options
-	end
+	-- LibDBIcon
+	NS.ldbi = LibStub:GetLibrary( "LibDBIcon-1.0" );
+	NS.ldbi:Register( NS.addon, NS.ldb, NS.db["ldbi"] );
 end
 --
 NS.OnTradeSkillListUpdate = function( event )
