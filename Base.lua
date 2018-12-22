@@ -424,6 +424,7 @@ NS.MinimapButton = function( name, texture, set )
 	local f = CreateFrame( "Button", name, Minimap );
 	f.db = set.db; -- Saved position variable
 	f.docked = true;
+	f.locked = false;
 	local i,b,bg,radius,diagRadius;
 	local minimapShapes = {
 		["ROUND"] = { true, true, true, true },
@@ -444,9 +445,13 @@ NS.MinimapButton = function( name, texture, set )
 	-- Position and Dragging
 	f:EnableMouse( true );
 	f:SetMovable( true );
-	f:RegisterForClicks( "LeftButtonUp", "RightButtonUp" );
+	f:RegisterForClicks( "LeftButtonUp", "RightButtonUp", "MiddleButtonUp" );
 	f:RegisterForDrag( "LeftButton", "RightButton" );
 	local BeingDragged = function()
+		-- Locked
+		if f.locked then
+			return;
+		end
 		-- Undocked
 		if not f.docked then
 			f:StartMoving();
@@ -559,6 +564,8 @@ NS.MinimapButton = function( name, texture, set )
 			set.OnLeftClick( self, ... );
 		elseif btn == "RightButton" and set.OnRightClick then
 			set.OnRightClick( self, ... );
+		elseif btn == "MiddleButton" and set.OnMiddleClick then
+			set.OnMiddleClick( self, ... );
 		end
 	end );
 	if set.OnLoad then
@@ -862,27 +869,16 @@ NS.AddLinesToTooltip = function( lines, double, tooltip )
 	-- https://wow.gamepedia.com/API_GameTooltip_AddDoubleLine
 	-- GameTooltip:AddLine(tooltipText [, r, g, b [, wrapText]])
 	-- GameTooltip:AddDoubleLine(leftText, rightText[, leftR, leftG, leftB[, rightR, rightG, rightB]])
-	--
-	-- fontObject disabled for now, screws up GameTooltip, but works fine if used on custom tooltip.
-	--
 	tooltip = tooltip or GameTooltip;
 	local tooltipName = tooltip:GetName();
 	if type( lines ) == "table" then
 		for i = 1, #lines do
 			if type( lines[i] ) == "table" then
-				--local fontObject;
 				if double then
 					tooltip:AddDoubleLine( lines[i][1], lines[i][2], ( lines[i][3] or nil ), ( lines[i][4] or nil ), ( lines[i][5] or nil ), ( lines[i][6] or nil ), ( lines[i][7] or nil ), ( lines[i][8] or nil ) );
-					--fontObject = #lines[i] > 2 and type( lines[i][#lines[i]] ) == "string" and lines[i][#lines[i]] or nil;
 				else
 					tooltip:AddLine( lines[i][1], ( lines[i][2] or nil ), ( lines[i][3] or nil ), ( lines[i][4] or nil ), ( lines[i][5] or nil ) );
-					--fontObject = #lines[i] > 1 and type( lines[i][#lines[i]] ) == "string" and lines[i][#lines[i]] or nil;
 				end
-				-- if fontObject then
-				-- 	local lineNum = tooltip:NumLines();
-				-- 	_G[tooltipName .. "TextLeft" .. lineNum]:SetFontObject( fontObject );
-				-- 	_G[tooltipName .. "TextRight" .. lineNum]:SetFontObject( fontObject );
-				-- end
 			else
 				tooltip:AddLine( lines[i] );
 			end

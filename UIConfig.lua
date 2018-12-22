@@ -784,13 +784,10 @@ NS.UI.cfg = {
 					setPoint = { "TOPLEFT", "#sibling", "BOTTOMLEFT", 0, -1 },
 					tooltip = L["Show or hide the\nbutton on the Minimap"],
 					OnClick = function( checked )
-						if not checked then
-							PCMinimapButton:Hide();
-						else
-							PCMinimapButton:Show();
-						end
+						-- LibDBIcon
+						NS.db["ldbi"].hide = not checked;
+						NS.ldbi:Refresh( NS.addon );
 					end,
-					db = "showMinimapButton",
 				} );
 				NS.CheckButton( "ShowCharacterRealmsCheckButton", SubFrame, L["Show Character Realms"], {
 					setPoint = { "TOPLEFT", "#sibling", "BOTTOMLEFT", 0, -1 },
@@ -806,7 +803,7 @@ NS.UI.cfg = {
 			Refresh			= function( SubFrame )
 				local sfn = SubFrame:GetName();
 				_G[sfn .. "OpenWithTradeSKillCheckButton"]:SetChecked( NS.dbpc["openWithTradeSKill"] );
-				_G[sfn .. "ShowMinimapButtonCheckButton"]:SetChecked( NS.db["showMinimapButton"] );
+				_G[sfn .. "ShowMinimapButtonCheckButton"]:SetChecked( not NS.db["ldbi"].hide ); -- LibDBIcon
 				_G[sfn .. "ShowCharacterRealmsCheckButton"]:SetChecked( NS.db["showCharacterRealms"] );
 				_G[sfn .. "ShowDeleteCooldownConfirmDialogCheckButton"]:SetChecked( NS.db["showDeleteCooldownConfirmDialog"] );
 			end,
