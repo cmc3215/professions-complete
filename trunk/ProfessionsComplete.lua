@@ -3,8 +3,8 @@
 --------------------------------------------------------------------------------------------------------------------------------------------
 local NS = select( 2, ... );
 local L = NS.localization;
-NS.releasePatch = "8.1";
-NS.versionString = "2.9";
+NS.releasePatch = "8.3.5";
+NS.versionString = "3.0";
 NS.version = tonumber( NS.versionString );
 --
 NS.initialized = false;
@@ -108,6 +108,7 @@ NS.professionInfo = {
 			{ spellID = 251309, name = GetSpellInfo( 251309 ), itemID = 152578, icon = GetItemIcon( 152578 ) }, -- Transmute: Ore to Herbs
 			{ spellID = 251306, name = GetSpellInfo( 251306 ), itemID = 152580, icon = GetItemIcon( 152580 ) }, -- Transmute: Herbs to Cloth
 			{ spellID = 251305, name = GetSpellInfo( 251305 ), itemID = 160322, icon = GetItemIcon( 160322 ) }, -- Transmute: Herbs to Ore
+			{ spellID = 286547, name = GetSpellInfo( 286547 ), itemID = 165851, icon = GetItemIcon( 165851 ) }, -- Transmute: Herbs to Anchors			
 		},
 	},
 	-- Blacksmithing
