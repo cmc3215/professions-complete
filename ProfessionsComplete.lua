@@ -3,8 +3,8 @@
 --------------------------------------------------------------------------------------------------------------------------------------------
 local NS = select( 2, ... );
 local L = NS.localization;
-NS.releasePatch = "8.3.5";
-NS.versionString = "3.0";
+NS.releasePatch = "10.0.2";
+NS.versionString = "3.1";
 NS.version = tonumber( NS.versionString );
 --
 NS.initialized = false;
@@ -108,7 +108,18 @@ NS.professionInfo = {
 			{ spellID = 251309, name = GetSpellInfo( 251309 ), itemID = 152578, icon = GetItemIcon( 152578 ) }, -- Transmute: Ore to Herbs
 			{ spellID = 251306, name = GetSpellInfo( 251306 ), itemID = 152580, icon = GetItemIcon( 152580 ) }, -- Transmute: Herbs to Cloth
 			{ spellID = 251305, name = GetSpellInfo( 251305 ), itemID = 160322, icon = GetItemIcon( 160322 ) }, -- Transmute: Herbs to Ore
-			{ spellID = 286547, name = GetSpellInfo( 286547 ), itemID = 165851, icon = GetItemIcon( 165851 ) }, -- Transmute: Herbs to Anchors			
+			{ spellID = 286547, name = GetSpellInfo( 286547 ), itemID = 165851, icon = GetItemIcon( 165851 ) }, -- Transmute: Herbs to Anchors
+			-- SHADOWLANDS
+			{ spellID = 307143, name = GetSpellInfo( 307143 ), itemID = 180457, icon = GetItemIcon( 180457 ) }, -- Shadestone
+			{ spellID = 307144, name = GetSpellInfo( 307144 ), itemID = 186694, icon = GetItemIcon( 186694 ) }, -- Stones to Ore
+			{ spellID = 307142, name = GetSpellInfo( 307142 ), itemID = 171428, icon = GetItemIcon( 171428 ) }, -- Shadowghast Ingot
+			-- DRAGONFLIGHT
+			{ spellID = 370711, name = GetSpellInfo( 370711 ), itemID = 190327, icon = GetItemIcon( 190327 ) }, -- Transmute: Awakened Air
+			{ spellID = 370710, name = GetSpellInfo( 370710 ), itemID = 190316, icon = GetItemIcon( 190316 ) }, -- Transmute: Awakened Earth
+			{ spellID = 370707, name = GetSpellInfo( 370707 ), itemID = 190321, icon = GetItemIcon( 190321 ) }, -- Transmute: Awakened Fire
+			{ spellID = 370715, name = GetSpellInfo( 370715 ), itemID = 190324, icon = GetItemIcon( 190324 ) }, -- Transmute: Order to Elements
+			{ spellID = 370708, name = GetSpellInfo( 370708 ), itemID = 190329, icon = GetItemIcon( 190329 ) }, -- Transmute: Awakened Frost
+			{ spellID = 370714, name = GetSpellInfo( 370714 ), itemID = 190331, icon = GetItemIcon( 190331 ) }, -- Transmute: Decay to Elements
 		},
 	},
 	-- Blacksmithing
@@ -182,6 +193,12 @@ NS.professionInfo = {
 			-- WoD Expansion
 			{ spellID = 170700, name = GetSpellInfo( 170700 ), itemID = 115524, icon = GetItemIcon( 115524 ) }, -- Taladite Crystal
 			{ spellID = 176087, name = GetSpellInfo( 176087 ), itemID = 118723, icon = GetItemIcon( 118723 ) }, -- Secrets of Draenor Jewelcrafting
+			-- DRAGONFLIGHT
+			{ spellID = 374550, name = GetSpellInfo( 374550 ), itemID = 38637, icon = GetItemIcon( 38637 ) }, -- Timewatcher's Patience
+			{ spellID = 374547, name = GetSpellInfo( 374547 ), itemID = 38637, icon = GetItemIcon( 38637 ) }, -- Dreamer's Vision
+			{ spellID = 374546, name = GetSpellInfo( 374546 ), itemID = 38637, icon = GetItemIcon( 38637 ) }, -- Queen's Gift
+			{ spellID = 374549, name = GetSpellInfo( 374549 ), itemID = 38637, icon = GetItemIcon( 38637 ) }, -- Earthwarden's Prize
+			{ spellID = 374548, name = GetSpellInfo( 374548 ), itemID = 38637, icon = GetItemIcon( 38637 ) }, -- Keeper's Glory
 		},
 	},
 	-- Leatherworking
@@ -215,6 +232,9 @@ NS.professionInfo = {
 			-- WoD Expansion
 			{ spellID = 168835, name = GetSpellInfo( 168835 ), itemID = 111556, icon = GetItemIcon( 111556 ) }, -- Hexweave Cloth
 			{ spellID = 176058, name = GetSpellInfo( 176058 ), itemID = 118722, icon = GetItemIcon( 118722 ) }, -- Secrets of Draenor Tailoring
+			-- DRAGONFLIGHT
+			{ spellID = 376556, name = GetSpellInfo( 376556 ), itemID = 193938, icon = GetItemIcon( 193938 ) }, -- Azureweave Bolt
+			{ spellID = 376557, name = GetSpellInfo( 376557 ), itemID = 193935, icon = GetItemIcon( 193935 ) }, -- Chronocloth Bolt
 		},
 	},
 };
@@ -368,8 +388,8 @@ end
 -- Misc
 --------------------------------------------------------------------------------------------------------------------------------------------
 NS.OpenWithTradeSkill = function()
-	if NS.dbpc["openWithTradeSKill"] and C_TradeSkillUI.GetTradeSkillLine() ~= 129 and C_TradeSkillUI.GetTradeSkillLine() ~= 185 and C_TradeSkillUI.GetTradeSkillLine() ~= 960 and not C_TradeSkillUI.IsTradeSkillLinked() and not C_TradeSkillUI.IsTradeSkillGuild() then
-		local parent = ( TradeSkillFrame and TradeSkillFrame:IsShown() and TradeSkillFrame ) or ( TSMCraftingTradeSkillFrame and TSMCraftingTradeSkillFrame:IsShown() and TSMCraftingTradeSkillFrame ) or ( SkilletFrame and SkilletFrame:IsShown() and SkilletFrame );
+	if NS.dbpc["openWithTradeSKill"] and C_TradeSkillUI.GetBaseProfessionInfo().professionID ~= 129 and C_TradeSkillUI.GetBaseProfessionInfo().professionID ~= 185 and C_TradeSkillUI.GetBaseProfessionInfo().professionID ~= 960 and not C_TradeSkillUI.IsTradeSkillLinked() and not C_TradeSkillUI.IsTradeSkillGuild() then
+		local parent = ProfessionsFrame and ProfessionsFrame:IsShown() and ProfessionsFrame;
 		if parent then
 			NS.UI.MainFrame:SetParent( parent ); -- Put into parent for positioning
 			NS.UI.MainFrame:Reposition();
@@ -472,9 +492,9 @@ NS.OnAddonLoaded = function( event )
 		if NS.dbpc["version"] < NS.version then
 			NS.UpgradePerCharacter();
 		end
-	elseif TradeSkillFrame then
+	elseif ProfessionsFrame then
 		PCEventsFrame:UnregisterEvent( event );
-		TradeSkillFrame:HookScript( "OnShow", NS.OpenWithTradeSkill );
+		ProfessionsFrame:HookScript( "OnShow", NS.OpenWithTradeSkill );
 	end
 end
 --
@@ -497,18 +517,6 @@ NS.OnPlayerLogin = function( event )
 	NS.ldbi:Register( NS.addon, NS.ldb, NS.db["ldbi"] );
 end
 --
-NS.OnTradeSkillListUpdate = function( event )
-	if TSMCraftingTradeSkillFrame then
-		PCEventsFrame:UnregisterEvent( event );
-		TSMCraftingTradeSkillFrame:HookScript( "OnShow", NS.OpenWithTradeSkill );
-		NS.OpenWithTradeSkill();
-	elseif SkilletFrame then
-		PCEventsFrame:UnregisterEvent( event );
-		SkilletFrame:HookScript( "OnShow", NS.OpenWithTradeSkill );
-		NS.OpenWithTradeSkill();
-	end
-end
---
 NS.OnChatMsgTradeskills = function( event, ... )
 	local arg1 = select( 1, ... );
 	if not arg1 then return end
@@ -525,7 +533,6 @@ NS.Frame( "PCEventsFrame", UIParent, {
 	OnEvent = function ( self, event, ... )
 		if		event == "ADDON_LOADED"				then	NS.OnAddonLoaded( event );
 		elseif	event == "PLAYER_LOGIN"				then	NS.OnPlayerLogin( event );
-		elseif	event == "TRADE_SKILL_LIST_UPDATE"	then	NS.OnTradeSkillListUpdate( event );
 		elseif	event == "CHAT_MSG_TRADESKILLS"		then	NS.OnChatMsgTradeskills( event, ... );
 		elseif	event == "SKILL_LINES_CHANGED"		then	NS.Update( event );
 		end

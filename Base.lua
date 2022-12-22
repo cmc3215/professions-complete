@@ -219,7 +219,7 @@ NS.Button = function( name, parent, text, set )
 end
 --
 NS.CheckButton = function( name, parent, text, set )
-	local f = CreateFrame( "CheckButton", "$parent" .. name, parent, set.template or "InterfaceOptionsCheckButtonTemplate" );
+	local f = CreateFrame( "CheckButton", "$parent" .. name, parent, set.template or "UICheckButtonTemplate" );
 	--
 	_G[f:GetName() .. 'Text']:SetText( text );
 	--

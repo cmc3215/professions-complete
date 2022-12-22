@@ -1,3 +1,11 @@
+**3.1**
+
+- Release date: 12/04/2022
+- TOC updated for patch 10.0.2.
+- Significant compatibility fixes for professions UI and API changes.
+- Increased height of addon frame to match new larger Professions frame.
+- Added new default cooldowns from Shadowlands and Dragonflight.
+
 **3.0**
 
 - Release date: 05/08/2020
