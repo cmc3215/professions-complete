@@ -10,7 +10,7 @@ NS.UI.cfg = {
 	--
 	mainFrame = {
 		width		= 469,
-		height		= 496,
+		height		= 496 + 163,
 		frameStrata	= "MEDIUM",
 		frameLevel	= "TOP",
 		Init		= function( MainFrame ) end,
@@ -19,8 +19,8 @@ NS.UI.cfg = {
 		end,
 		OnHide		= function( MainFrame )
 			local parentName = MainFrame:GetParent():GetName();
-			if parentName == "TradeSkillFrame" or parentName == "TSMCraftingTradeSkillFrame" or parentName == "SkilletFrame" then
-				MainFrame:SetParent( UIParent ); -- Remove from TradeSkillFrame, TSMCraftingTradeSkillFrame, SkilletFrame
+			if parentName == "ProfessionsFrame" then
+				MainFrame:SetParent( UIParent ); -- Remove from ProfessionsFrame
 				MainFrame:Hide();
 			end
 			StaticPopup_Hide( "PC_CHARACTER_DELETE" );
@@ -32,10 +32,8 @@ NS.UI.cfg = {
 		Reposition = function( MainFrame )
 			MainFrame:ClearAllPoints();
 			local parentName = MainFrame:GetParent():GetName();
-			if parentName == "TradeSkillFrame" then
-				MainFrame:SetPoint( "LEFT", "$parent", "RIGHT", 0, 0 ); -- TradeSkillFrame
-			elseif parentName == "TSMCraftingTradeSkillFrame" or parentName == "SkilletFrame" then
-				MainFrame:SetPoint( "TOPLEFT", "$parent", "TOPRIGHT", 0, 0 ); -- SkilletFrame
+			if parentName == "ProfessionsFrame" then
+				MainFrame:SetPoint( "LEFT", "$parent", "RIGHT", -5, 0 ); -- ProfessionsFrame
 			else
 				MainFrame:SetPoint( "CENTER", 0, 0 ); -- UIParent
 			end
@@ -59,8 +57,8 @@ NS.UI.cfg = {
 					setPoint = { "TOPLEFT", "#sibling", "TOPRIGHT", -2, 0 },
 				} );
 				local function CooldownButton_OnClick( CooldownButton, buttonClicked, skillLine, spellName, spellID )
-					if ( ( not TradeSkillFrame or not TradeSkillFrame:IsShown() ) and ( not TSMCraftingTradeSkillFrame or not TSMCraftingTradeSkillFrame:IsShown() ) and ( not SkilletFrame or not SkilletFrame:IsShown() ) ) or C_TradeSkillUI.IsTradeSkillLinked() or C_TradeSkillUI.IsTradeSkillGuild() or skillLine ~= select( 6, C_TradeSkillUI.GetTradeSkillLine() ) then
-						CastSpellByName( NS.professionInfo[skillLine].name ); -- Open required TradeSkillFrame. Not having the profession causes no effect
+					if skillLine ~= C_TradeSkillUI.GetBaseProfessionInfo().professionID or C_TradeSkillUI.IsTradeSkillLinked() or C_TradeSkillUI.IsTradeSkillGuild() then
+						C_TradeSkillUI.OpenTradeSkill( skillLine );
 						C_Timer.After( 0.01, function()
 							if GetMouseFocus() == CooldownButton then
 								CooldownButton:GetScript( "OnEnter" )( CooldownButton ); -- Updates tooltip - I had to delay this in patch 8.0.1 because a newly opened TradeSkill wasn't being reflected fast enough.
@@ -71,28 +69,12 @@ NS.UI.cfg = {
 						if not recipeInfo or not recipeInfo.learned then
 							NS.Print( RED_FONT_COLOR_CODE .. string.format( L["%s spell %s (%d) not found"], NS.professionInfo[skillLine].name, spellName, spellID ) .. FONT_COLOR_CODE_CLOSE );
 						else
-							if TradeSkillFrame and TradeSkillFrame:IsShown() then -- Select recipe if using TradeSkillFrame
-								TradeSkillFrame.RecipeList:OnLearnedTabClicked(); -- Learned Tab
-								if not TradeSkillFrame.RecipeList:IsRecipeInCurrentList( spellID ) then
-									-- Expand Categories
-									TradeSkillFrame.RecipeList.collapsedCategories = {};
-									-- Clear "Search"
-									C_TradeSkillUI.SetRecipeItemNameFilter( "" );
-									C_TradeSkillUI.SetRecipeItemLevelFilter( 0, 0 );
-									TradeSkillFrame.SearchBox:SetText( "" );
-									TradeSkillFrame.SearchBox:ClearFocus();
-									-- Clear "Filter"
-									C_TradeSkillUI.SetOnlyShowMakeableRecipes( false ); -- Clear "Have Materials" filter
-									C_TradeSkillUI.SetOnlyShowSkillUpRecipes( false ); -- Clear "Has skill up" filter
-									C_TradeSkillUI.ClearInventorySlotFilter(); -- Clear "Slots" filter
-									C_TradeSkillUI.ClearRecipeCategoryFilter(); -- Clear "Category" filter
-									C_TradeSkillUI.ClearRecipeSourceTypeFilter(); -- Clear "Sources" filter
-									CloseDropDownMenus();
-									-- Try to select shortly after clear and expand
-									C_Timer.After( 0.10, function() TradeSkillFrame.RecipeList:SetSelectedRecipeID( spellID ); end );
-								else
-									TradeSkillFrame.RecipeList:SetSelectedRecipeID( spellID );
-								end
+							if ProfessionsFrame and ProfessionsFrame:IsShown() then -- Select recipe if using ProfessionsFrame	
+								Professions.SetDefaultFilters();
+								C_TradeSkillUI.OpenRecipe( recipeInfo.recipeID );
+								C_Timer.After( 0.10, function()
+									ProfessionsFrame.CraftingPage.RecipeList:SelectRecipe( recipeInfo, 1 ); -- Slight delay before selecting for frame filter update
+								end );
 							end
 							if buttonClicked == "LeftButton" then
 								-- "LeftButton"
@@ -105,17 +87,17 @@ NS.UI.cfg = {
 					end
 				end
 				NS.ScrollFrame( "ScrollFrame", SubFrame, {
-					size = { 422, ( 30 * 12 - 5 ) },
+					size = { 422, ( 30 * 16 - 5 ) },
 					setPoint = { "TOPLEFT", "$parentNameColumnHeaderButton", "BOTTOMLEFT", 1, -3 },
 					buttonTemplate = "PCMonitorTabScrollFrameButtonTemplate",
 					update = {
-						numToDisplay = 12, -- Default, will be reset on update
+						numToDisplay = 16, -- Default, will be reset on update
 						buttonHeight = 30, -- Default, will be reset on update
 						alwaysShowScrollBar = true,
 						UpdateFunction = function( sf )
-							local numToDisplayMax = 12; -- Allows hiding all unused buttons when switching to 2 rows of cooldowns
+							local numToDisplayMax = 16; -- Allows hiding all unused buttons when switching to 2 rows of cooldowns
 							local cdNumMax = 16; -- 2 rows of 8 cooldowns
-							sf.numToDisplay = 12; -- Reset to default for 1 row of cooldowns
+							sf.numToDisplay = 16; -- Reset to default for 1 row of cooldowns
 							sf.buttonHeight = 30; -- Reset to default for 1 row of cooldowns
 							NS.notReady = 0;
 							NS.ready = 0;
@@ -155,7 +137,7 @@ NS.UI.cfg = {
 									end
 									-- Activate 2nd row of cooldowns
 									if monitoring > 8 then
-										sf.numToDisplay = 6;
+										sf.numToDisplay = 8;
 										sf.buttonHeight = 60;
 									end
 								end
@@ -180,7 +162,7 @@ NS.UI.cfg = {
 										GameTooltip:SetText( text );
 										if skillLine then
 											local line = "";
-											if ( ( not TradeSkillFrame or not TradeSkillFrame:IsShown() ) and ( not TSMCraftingTradeSkillFrame or not TSMCraftingTradeSkillFrame:IsShown() ) and ( not SkilletFrame or not SkilletFrame:IsShown() ) ) or C_TradeSkillUI.IsTradeSkillLinked() or C_TradeSkillUI.IsTradeSkillGuild() or skillLine ~= select( 6, C_TradeSkillUI.GetTradeSkillLine() ) then
+											if skillLine ~= C_TradeSkillUI.GetBaseProfessionInfo().professionID or C_TradeSkillUI.IsTradeSkillLinked() or C_TradeSkillUI.IsTradeSkillGuild() then
 												line = string.format( L["Click to open %s"], NS.professionInfo[skillLine].name );
 											else
 												line = L["Click to Create"];
@@ -280,7 +262,7 @@ NS.UI.cfg = {
 				} );
 				NS.TextFrame( "Footer", SubFrame, "", {
 					size = { 450, 16 },
-					setPoint = { "BOTTOM", "$parent", "BOTTOM", 0, 20 },
+					setPoint = { "BOTTOM", "$parent", "BOTTOM", 0, 10 },
 					justifyH = "CENTER",
 				} );
 			end,
@@ -336,11 +318,11 @@ NS.UI.cfg = {
 					return numMonitored,numTotal;
 				end
 				NS.ScrollFrame( "ScrollFrame", SubFrame, {
-					size = { 422, ( 30 * 12 - 5 ) },
+					size = { 422, ( 30 * 17 - 5 ) },
 					setPoint = { "TOPLEFT", "$parent", "TOPLEFT", -1, -37 },
 					buttonTemplate = "PCCharactersTabScrollFrameButtonTemplate",
 					update = {
-						numToDisplay = 12,
+						numToDisplay = 17,
 						buttonHeight = 30,
 						alwaysShowScrollBar = true,
 						UpdateFunction = function( sf )
@@ -442,7 +424,7 @@ NS.UI.cfg = {
 						table.remove( NS.db["characters"], data["ck"] );
 						NS.Print( RED_FONT_COLOR_CODE .. string.format( L["%s deleted"], data["name"] ) .. FONT_COLOR_CODE_CLOSE );
 						-- Reset keys (Exactly like initialize)
-						NS.currentCharacter.key = NS.FindKeyByName( NS.db["characters"], NS.currentCharacter.name ); -- Must be reset when a character is deleted because the keys shift up one
+						NS.currentCharacter.key = NS.FindKeyByField( NS.db["characters"], 'name', NS.currentCharacter.name ); -- Must be reset when a character is deleted because the keys shift up one
 						NS.selectedCharacterKey = NS.currentCharacter.key; -- Sets selected character to current character
 						-- Refresh
 						SubFrame:Refresh();
@@ -511,11 +493,11 @@ NS.UI.cfg = {
 					justifyH = "RIGHT",
 				} );
 				NS.ScrollFrame( "ScrollFrame", SubFrame, {
-					size = { 422, ( 30 * 12 - 5 ) },
+					size = { 422, ( 30 * 17 - 5 ) },
 					setPoint = { "TOPLEFT", "$parent", "TOPLEFT", -1, -37 },
 					buttonTemplate = "PCProfessionsTabScrollFrameButtonTemplate",
 					update = {
-						numToDisplay = 12,
+						numToDisplay = 17,
 						buttonHeight = 30,
 						alwaysShowScrollBar = true,
 						UpdateFunction = function( sf )
@@ -777,7 +759,7 @@ NS.UI.cfg = {
 				} );
 				NS.CheckButton( "OpenWithTradeSKillCheckButton", SubFrame, L["Open With TradeSkill"], {
 					setPoint = { "TOPLEFT", "#sibling", "BOTTOMLEFT", 3, -1 },
-					tooltip = L["Open and close frame with:\nTradeSkillFrame (Default)\nTSMCraftingTradeSkillFrame\nSkilletFrame\n\nIgnored if Linked or Guild\n\n(Character Specific)"],
+					tooltip = L["Open and close frame with:\nProfessionsFrame (Default)\n\nIgnored if Linked or Guild\n\n(Character Specific)"],
 					dbpc = "openWithTradeSKill",
 				} );
 				NS.CheckButton( "ShowMinimapButtonCheckButton", SubFrame, L["Show Minimap Button"], {
